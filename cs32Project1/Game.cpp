@@ -6,7 +6,7 @@
 #include "Player.h"
 using namespace std;
 
-
+bool recommendMove(const Arena& a, int r, int c, int& bestDir);
 
 Game::Game(int rows, int cols, int nRabbits)
 {
@@ -64,7 +64,7 @@ string Game::takePlayerTurn()
 {
     for (;;)
     {
-        cout << "Your move (n/e/s/w/c or nothing): ";
+        cout << "Your move (n/e/s/w/c/h or nothing): ";
         string playerMove;
         getline(cin, playerMove);
 
@@ -85,7 +85,7 @@ string Game::takePlayerTurn()
             else if (decodeDirection(playerMove[0], dir))
                 return player->move(dir);
         }
-        cout << "Player move must be nothing, or 1 character n/e/s/w/c." << endl;
+        cout << "Player move must be nothing, or 1 character n/e/s/w/c/h." << endl;
     }
 }
 
@@ -108,4 +108,43 @@ void Game::play()
         cout << "You lose." << endl;
     else
         cout << "You win." << endl;
+}
+
+
+bool recommendMove(const Arena& a, int r, int c, int& bestDir)
+{
+    // How dangerous is it to stand?
+    int standDanger = computeDanger(a, r, c);
+
+    // if it's not safe, see if moving is safer
+    if (standDanger > 0)
+    {
+        int bestMoveDanger = standDanger;
+        int bestMoveDir = NORTH;  // arbitrary initialization
+
+        // check the four directions to see if any move is
+        // better than standing, and if so, record the best
+        for (int dir = 0; dir < NUMDIRS; dir++)
+        {
+            int rnew = r;
+            int cnew = c;
+            if (attemptMove(a, dir, rnew, cnew))
+            {
+                int danger = computeDanger(a, rnew, cnew);
+                if (danger < bestMoveDanger)
+                {
+                    bestMoveDanger = danger;
+                    bestMoveDir = dir;
+                }
+            }
+        }
+
+        // if moving is better than standing, recommend move
+        if (bestMoveDanger < standDanger)
+        {
+            bestDir = bestMoveDir;
+            return true;
+        }
+    }
+    return false;  // recommend standing
 }

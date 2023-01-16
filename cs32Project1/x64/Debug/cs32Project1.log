@@ -1,26 +1,2 @@
-﻿  Arena.cpp
-  Game.cpp
-  History.cpp
-  main.cpp
-  Player.cpp
-  Rabbit.cpp
-  utilities.cpp
-E:\CS32\cs32Project1\utilities.cpp(48,21): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(49,21): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(105,8): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(110,20): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(111,8): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(112,20): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(114,20): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(115,8): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(116,20): error C2027: use of undefined type 'Arena'
-E:\CS32\cs32Project1\utilities.cpp(12,7): message : see declaration of 'Arena'
-  Generating Code...
+﻿  Game.cpp
+  cs32Project1.vcxproj -> E:\CS32\cs32Project1\x64\Debug\cs32Project1.exe
