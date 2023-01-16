@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Rabbit.h"
 #include "Player.h"
+#include "globals.h"
 using namespace std;
 
 
