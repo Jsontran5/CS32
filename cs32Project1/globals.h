@@ -22,7 +22,6 @@ const int HAS_POISON = 1;
 
 //Function Prototypes
 int randInt(int lowest, int highest);
-bool decodeDirection(char ch, int& dir);
 bool attemptMove(const Arena& a, int dir, int& r, int& c);
 int computeDanger(const Arena& a, int r, int c);
 void clearScreen();

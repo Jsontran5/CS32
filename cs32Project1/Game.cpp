@@ -2,11 +2,13 @@
 #include "Game.h"
 #include "globals.h"
 #include <iostream>
+#include <cctype>
 #include "Arena.h"
 #include "Player.h"
 using namespace std;
 
 bool recommendMove(const Arena& a, int r, int c, int& bestDir);
+bool decodeDirection(char ch, int& dir);
 
 Game::Game(int rows, int cols, int nRabbits)
 {
@@ -84,6 +86,14 @@ string Game::takePlayerTurn()
                 return player->dropPoisonedCarrot();
             else if (decodeDirection(playerMove[0], dir))
                 return player->move(dir);
+            else if (tolower(playerMove[0]) == 'h')
+            {
+                m_arena->history().display();
+                cout << endl;
+                cout << "Press enter to continue.";
+                cin.ignore(10000, '\n');
+                return "";
+            }
         }
         cout << "Player move must be nothing, or 1 character n/e/s/w/c/h." << endl;
     }
@@ -101,8 +111,12 @@ void Game::play()
         m_arena->display(msg);
         if (player->isDead())
             break;
-        m_arena->moveRabbits();
-        m_arena->display(msg);
+        if (msg != "")
+        {
+            m_arena->moveRabbits();
+            m_arena->display(msg);
+        }
+      
     }
     if (player->isDead())
         cout << "You lose." << endl;
@@ -147,4 +161,17 @@ bool recommendMove(const Arena& a, int r, int c, int& bestDir)
         }
     }
     return false;  // recommend standing
+}
+
+bool decodeDirection(char ch, int& dir)
+{
+    switch (tolower(ch))
+    {
+    default:  return false;
+    case 'n': dir = NORTH; break;
+    case 'e': dir = EAST;  break;
+    case 's': dir = SOUTH; break;
+    case 'w': dir = WEST;  break;
+    }
+    return true;
 }

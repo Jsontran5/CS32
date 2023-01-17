@@ -3,6 +3,7 @@
 #include "Rabbit.h"
 #include "Player.h"
 #include "globals.h"
+#include "History.h"
 using namespace std;
 
 
@@ -12,6 +13,7 @@ using namespace std;
 
 
 Arena::Arena(int nRows, int nCols)
+: m_history(nRows, nCols)
 {
     if (nRows <= 0 || nCols <= 0 || nRows > MAXROWS || nCols > MAXCOLS)
     {
@@ -128,6 +130,12 @@ void Arena::setCellStatus(int r, int c, int status)
     checkPos(r, c, "Arena::setCellStatus");
     m_grid[r - 1][c - 1] = status;
 }
+
+History& Arena::history()
+{
+    return m_history;
+}
+
 
 bool Arena::addRabbit(int r, int c)
 {

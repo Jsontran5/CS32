@@ -1,4 +1,2 @@
-﻿  main.cpp
-E:\CS32\cs32Project1\main.cpp(33,2): error C2065: 'History': undeclared identifier
-E:\CS32\cs32Project1\main.cpp(33,10): error C2146: syntax error: missing ';' before identifier 'h'
-E:\CS32\cs32Project1\main.cpp(33,10): error C2065: 'h': undeclared identifier
+﻿  History.cpp
+LINK : fatal error LNK1168: cannot open E:\CS32\cs32Project1\x64\Debug\cs32Project1.exe for writing

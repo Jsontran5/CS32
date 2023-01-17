@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include <string>
+#include "History.h"
 class Player;
 class Rabbit;
 
@@ -23,6 +24,8 @@ public:
     int     getCellStatus(int r, int c) const;
     int     numberOfRabbitsAt(int r, int c) const;
     void    display(string msg) const;
+    History& history();
+    
 
     // Mutators
     void setCellStatus(int r, int c, int status);
@@ -38,6 +41,7 @@ private:
     Rabbit* m_rabbits[MAXRABBITS];
     int     m_nRabbits;
     int     m_turns;
+    History m_history;
 
     // Helper functions
     void checkPos(int r, int c, string functionName) const;

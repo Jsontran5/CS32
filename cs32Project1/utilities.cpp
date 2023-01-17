@@ -20,18 +20,7 @@ int randInt(int lowest, int highest)
     return distro(generator);
 }
 
-bool decodeDirection(char ch, int& dir)
-{
-    switch (tolower(ch))
-    {
-    default:  return false;
-    case 'n': dir = NORTH; break;
-    case 'e': dir = EAST;  break;
-    case 's': dir = SOUTH; break;
-    case 'w': dir = WEST;  break;
-    }
-    return true;
-}
+
 
 // Return false without changing anything if moving one step from (r,c)
 // in the indicated direction would run off the edge of the arena.
