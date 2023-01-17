@@ -1,2 +1,2 @@
 ﻿  History.cpp
-LINK : fatal error LNK1168: cannot open E:\CS32\cs32Project1\x64\Debug\cs32Project1.exe for writing
+  cs32Project1.vcxproj -> E:\CS32\cs32Project1\x64\Debug\cs32Project1.exe
