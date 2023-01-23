@@ -9,11 +9,11 @@ History::History(int nRows, int nCols)
 {
     mRows = nRows;
     mCols = nCols;
-    for (int r = 1; r <= mRows; r++)
+    for (int r = 0; r < mRows; r++)
     {
-        for (int c = 1; c <= mCols; c++)
+        for (int c = 0; c < mCols; c++)
         {
-            historyGrid[r - 1][c - 1] = 0;
+            historyGrid[r][c] = 0;
         }
 
     }
@@ -28,15 +28,10 @@ bool History::record(int r, int c)
     {
         return false;
     }
-    else
-    {
-        historyGrid[r - 1][c - 1] += 1;
+  
+    historyGrid[r - 1][c - 1] += 1;
+    return true;
 
-        return true;
-    }
-
-
-   
 }
 
 
@@ -50,30 +45,35 @@ void History::display() const
   
   
 
-    for (int r = 1; r <= mRows; r++)
+    for (int r = 0; r < mRows; r++)
     {
-        for (int c = 1; c <= mCols; c++)
+        for (int c = 0; c < mCols; c++)
         {
-            if (historyGrid[r - 1][c - 1] == 0)
+            if (historyGrid[r][c] == 0)
             {
-                newGrid[r - 1][c - 1] = '.';
+                newGrid[r][c] = '.';
                 
             }
-            else if (historyGrid[r - 1][c - 1] < 26 && historyGrid[r - 1][c - 1] != 0)
+            else if (historyGrid[r][c] < 26 && historyGrid[r][c] != 0)
             {
-                newGrid[r-1][c-1] = 'A' + historyGrid[r - 1][c - 1] - 1;
+                newGrid[r][c] = 'A' + historyGrid[r][c] - 1;
                 
+            }
+            else
+            {
+                newGrid[r][c] = 'Z';
             }
 
-        }// ifhistoryGrid[r - 1][c - 1] = '0'; //copy arena display
+        }//similar arena's display()
     }
-    for (int r = 1; r <= mRows; r++)
+    for (int r = 0; r < mRows; r++)
     {
-        for (int c = 1; c <= mCols; c++)
+        for (int c = 0; c < mCols; c++)
         {
-            cout << newGrid[r-1][c-1];
+            cout << newGrid[r][c];
         }
+      
         cout << endl;
     }
-       
+    cout << endl;
 }

@@ -1,4 +1,3 @@
-
 #include "Game.h"
 #include "globals.h"
 #include <iostream>
@@ -89,7 +88,7 @@ string Game::takePlayerTurn()
             else if (tolower(playerMove[0]) == 'h')
             {
                 m_arena->history().display();
-                cout << endl;
+                //cout << endl;
                 cout << "Press enter to continue.";
                 cin.ignore(10000, '\n');
                 return "";
@@ -116,7 +115,7 @@ void Game::play()
             m_arena->moveRabbits();
             m_arena->display(msg);
         }
-      
+
     }
     if (player->isDead())
         cout << "You lose." << endl;
