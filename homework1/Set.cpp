@@ -48,7 +48,7 @@ bool Set::insert(const ItemType& value)
 
 	for (int i = 0; i < m_size; i++) //loop through the array
 	{
-		string temp;
+		ItemType temp;
 		//will prevent out of bounds
 		for (int j = i + 1; j < m_size; j++) //will be the value ahead of the array by one.
 		{
@@ -107,9 +107,8 @@ bool Set::contains(const ItemType& value) const
 		{
 			return true;
 		}
-
-		return false;
 	}
+	return false;
 }
 
 bool Set::get(int i, ItemType& value) const
@@ -131,4 +130,38 @@ bool Set::get(int i, ItemType& value) const
 		return true;
 	}
 	return false;
+}
+
+void Set::swap(Set& other)
+{
+	int other_size = other.size();
+
+	if (m_size > other.size())
+	{
+		for (int i = 0; i < m_size; i++)
+		{
+			ItemType temp = m_words[i];
+			m_words[i] = other.m_words[i];
+			other.m_words[i] = temp;
+		}
+		int temp = other.m_size;
+		other.m_size = m_size;
+		m_size = temp;
+
+	}
+	else
+	{
+		for (int i = 0; i < other.m_size; i++)
+		{
+			ItemType temp = other.m_words[i];
+			other.m_words[i] = m_words[i];
+			m_words[i] = temp;
+		}
+		int temp = other.m_size;
+		other.m_size = m_size;
+		m_size = temp;
+	}
+
+
+
 }

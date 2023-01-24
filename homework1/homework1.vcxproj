@@ -127,9 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CardSet.h" />
     <ClInclude Include="Set.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CardSet.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Set.cpp" />
   </ItemGroup>

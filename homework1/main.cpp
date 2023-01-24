@@ -1,17 +1,14 @@
-#include <iostream>
-#include <string>
 #include "Set.h"
+#include <iostream>
 #include <cassert>
 using namespace std;
 
-int main()
-{
-    Set s;
-    assert(s.empty());
-    ItemType x = "arepa";
-    assert(!s.get(42, x) && x == "arepa"); // x unchanged by get failure
-    s.insert("chapati");
-    assert(s.size() == 1);
-    assert(s.get(0, x) && x == "chapati");
-    cout << "Passed all tests" << endl;
+int main() {
+	Set s;
+	assert(s.empty());
+	s.insert(10000);
+	s.insert(20000);
+	assert(!s.insert(10000));
+	assert(!s.erase(450000));
+	cout << "All Tests Passed" << endl;
 }
