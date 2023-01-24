@@ -3,7 +3,7 @@
 
 #include <string>
 
-using ItemType = unsigned long;
+using ItemType = unsigned long; //MAKE SURE TO RESET BACK TO std::string
 const int DEFAULT_MAX_ITEMS = 160;
 
 class Set
@@ -11,9 +11,9 @@ class Set
 public:
     Set();         // Create an empty set (i.e., one whose size() is 0).
 
-    bool empty();  // Return true if the set is empty, otherwise false.
+    bool empty() const;  // Return true if the set is empty, otherwise false.
 
-    int size();    // Return the number of items in the set.
+    int size() const;    // Return the number of items in the set.
 
     bool insert(const ItemType& value);
     // Insert value into the set if it is not already present.  Return

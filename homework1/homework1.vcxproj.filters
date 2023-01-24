@@ -32,5 +32,11 @@
     <ClCompile Include="CardSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="testSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testCardSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

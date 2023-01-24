@@ -10,7 +10,7 @@ Set::Set()
 }
 
 
-bool Set::empty()
+bool Set::empty() const
 {
 	if (m_size == 0)
 	{
@@ -21,7 +21,7 @@ bool Set::empty()
 }
 
 
-int Set::size()
+int Set::size() const
 {
 
 	return m_size;
