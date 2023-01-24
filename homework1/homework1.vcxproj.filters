@@ -21,6 +21,9 @@
     <ClInclude Include="CardSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="newSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Set.cpp">
@@ -36,6 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="testCardSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testnewSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="newSet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

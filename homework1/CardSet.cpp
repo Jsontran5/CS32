@@ -10,9 +10,9 @@ CardSet::CardSet()
 
 
 
-bool CardSet::add(unsigned long cardNumber)
+bool CardSet::add(unsigned long cardnumber)
 {
-	if (m_cards.insert(cardNumber))
+	if (m_cards.insert(cardnumber))
 	{
 		return true;
 	}
