@@ -2,7 +2,7 @@
 #define CARDSET_INCLUDED
 
 
-#include "newSet.h"
+#include "Set.h"
 
 
 class CardSet

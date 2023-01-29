@@ -1,58 +1,12 @@
-#include "newSet.h"
-//#include <cstdlib>
-
+#include "Set.h"
 #include <string>
 #include <iostream>
 
 using namespace std;
 
-Set::Set(int value)
+Set::Set()
 {
-	if (value < 0)
-	{
-		exit(1);
-	}
-
 	m_size = 0;
-	m_newmax = value;
-	m_words = new ItemType[m_newmax];
-}
-
-Set::Set(const Set& other)
-{
-	this->m_size = other.m_size;
-	this->m_newmax = other.m_newmax;
-	this->m_words = new ItemType[m_size];
-
-	for (int i = 0; i < m_size; i++)
-	{
-		m_words[i] = other.m_words[i];
-	}
-}
-
-Set& Set::operator=(const Set& rhs)
-{
-	if (this == &rhs)
-	{
-		return *this;
-	}
-	delete [] m_words;
-
-	this->m_size = rhs.m_size;
-	this->m_newmax = rhs.m_newmax;
-	this->m_words = new ItemType[m_newmax];
-
-	for (int i = 0; i < m_size; i++)
-	{
-		m_words[i] = rhs.m_words[i];
-	}
-
-	return *this;
-}
-
-Set::~Set()
-{
-	delete[] m_words;
 }
 
 
@@ -75,7 +29,7 @@ int Set::size() const
 
 bool Set::insert(const ItemType& value)
 {
-	if (m_size >= m_newmax)
+	if (m_size >= 160)
 	{
 		return false;
 	}
@@ -91,18 +45,18 @@ bool Set::insert(const ItemType& value)
 	m_words[m_size] = value;
 	m_size++;
 
-	//sort
-	for (int i = 0; i < m_size; i++) 
+
+	for (int i = 0; i < m_size; i++) //loop through the array
 	{
 		ItemType temp;
-		
-		for (int j = i + 1; j < m_size; j++) 
+		//will prevent out of bounds
+		for (int j = i + 1; j < m_size; j++) //will be the value ahead of the array by one.
 		{
-			if (m_words[i] > m_words[j]) 
+			if (m_words[i] > m_words[j]) //if the element before is greater
 			{
-				temp = m_words[i]; 
-				m_words[i] = m_words[j]; 
-				m_words[j] = temp; 
+				temp = m_words[i]; //store the greater element
+				m_words[i] = m_words[j]; //swap the element to the one next to it because it will be smaller.
+				m_words[j] = temp; //the one next to it will now have the greater value
 			}
 		}
 	}
@@ -117,7 +71,7 @@ bool Set::erase(const ItemType& value)
 
 	for (int i = 0; i < m_size; i++)
 	{
-
+		
 		if (m_words[i] == value)
 		{
 			present = true;
@@ -180,18 +134,31 @@ bool Set::get(int i, ItemType& value) const
 
 void Set::swap(Set& other)
 {
-	int temp = other.m_size;
-	other.m_size = this->m_size;
-	this->m_size = temp;
+	int other_size = other.size();
 
-	int tempmax = other.m_newmax;
-	other.m_newmax = m_newmax;
-	this->m_newmax = tempmax;
+	if (m_size > other.size())
+	{
+		for (int i = 0; i < m_size; i++)
+		{
+			ItemType temp = m_words[i];
+			m_words[i] = other.m_words[i];
+			other.m_words[i] = temp;
+		}
+		int temp = other.m_size;
+		other.m_size = m_size;
+		m_size = temp;
 
-
-	ItemType* tempptr = other.m_words;
-	other.m_words = this->m_words;
-	this->m_words = tempptr;
-
-
+	}
+	else
+	{
+		for (int i = 0; i < other.m_size; i++)
+		{
+			ItemType temp = other.m_words[i];
+			other.m_words[i] = m_words[i];
+			m_words[i] = temp;
+		}
+		int temp = other.m_size;
+		other.m_size = m_size;
+		m_size = temp;
+	}
 }

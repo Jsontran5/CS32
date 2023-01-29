@@ -5,7 +5,7 @@
 
 #include <string>
 
-using ItemType = unsigned long; //MAKE SURE TO RESET BACK TO std::string
+using ItemType = std::string; //MAKE SURE TO RESET BACK TO std::string
 const int DEFAULT_MAX_ITEMS = 160;
 
 class Set
