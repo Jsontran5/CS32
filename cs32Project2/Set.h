@@ -33,7 +33,6 @@ class Set
         Node* m_head;
         Node* m_tail;
         int m_size;
-
 };
 
 
