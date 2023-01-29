@@ -99,6 +99,8 @@ StyleCopReport.xml
 *.scc
 *.vcxproj
 *.vcxproj.filters
+*.sln
+*.vcxproj.user
 
 
 
