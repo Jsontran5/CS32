@@ -9,11 +9,78 @@ Set::Set()
 	m_head = new Node;
 	m_head->next = m_head;
 	m_head->prev = m_head;
-	m_tail = m_head;
+	
 	m_size = 0;
 
 }
 
+Set::~Set()
+{
+	if (m_size == 0)
+	{
+		return;
+	}
+	if (m_size == 1) 
+	{
+		delete m_head;
+		return;
+	}
+
+	Node* p;
+	p = m_head->next;
+
+	while (p != m_head)
+	{
+		Node* n = p->next;
+		delete p;
+		p = n;
+	}
+
+	delete m_head;
+
+}
+
+
+Set::Set(const Set& other)
+{
+	m_size = other.m_size;
+	
+	m_head = new Node;
+	m_head->next = m_head;
+	m_head->prev = m_head;
+
+	Node* thisNodes = m_head->next;
+
+	Node* otherNodes = other.m_head->next;
+
+	while (otherNodes != other.m_head)
+	{
+		Node* thisNodes = m_head->next;
+
+		Node* copy = new Node;
+		copy->m_item = otherNodes->m_item;
+		copy->next = m_head;
+		copy->prev = thisNodes;
+		thisNodes->next = copy;
+		m_head->prev = copy;
+
+		otherNodes = otherNodes->next;
+	}
+
+}
+
+Set& Set::operator=(const Set& rhs)
+{
+	if (this == &rhs)
+	{
+		return *this;
+	}
+
+	Set temp = rhs;
+	swap(temp);
+	return *this;
+
+}
 
 bool Set::empty() const
 {
@@ -32,10 +99,10 @@ int Set::size() const
 
 bool Set::insert(const ItemType& value)
 {
-	/*if (contains(value) == true)
+	if (contains(value) == true)
 	{
 		return false;
-	}*/
+	}
 
 	Node* last = m_head->next;
 	while (last->next != m_head)
@@ -49,10 +116,10 @@ bool Set::insert(const ItemType& value)
 	last->next = p;
 	p->next = m_head;
 	p->prev = last;
-	m_tail = p;
+	m_head->prev = p;
+	
 	
 	m_size += 1;
-
 
 	Node* sort = m_head->next;
 	for (Node* sort = m_head->next; sort != m_head; sort = sort->next)
@@ -64,14 +131,93 @@ bool Set::insert(const ItemType& value)
 			sort->next->m_item = temp;
 		}
 	}
+	return true;
+}
+
+bool Set::erase(const ItemType& value)
+{
+	if (contains(value) == false)
+	{
+		return false;
+	}
+
+	Node* killMe = m_head->next;
+	while (killMe != m_head && killMe->m_item != value)
+	{
+		killMe = killMe->next;
+	}
+
+	killMe->prev->next = killMe->next;
+	killMe->next->prev = killMe->prev;
+
+	delete killMe;
+
+	m_size--;
 
 	return true;
+}
 
+
+bool Set::contains(const ItemType& value) const
+{
+	Node* find = m_head->next;
+
+	while (find != m_head && find->m_item != value)
+	{
+		find = find->next;
+	}
+
+	if (find->m_item == value)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Set::get(int pos, ItemType& value) const
+{
+	if (0 <= pos && pos < m_size)
+	{
+		Node* greater = m_head->next;
+		int count = 0;
+		
+		while (greater != m_head && count < pos)
+		{
+			greater = greater->next;
+			count++;
+		}
+
+		value = greater->m_item;
+		return true;
+
+	}
+
+	return false;
+}
+
+void Set::swap(Set& other)
+{
+	
+	int tempSize = other.m_size;
+	other.m_size = m_size;
+	m_size = tempSize;
+
+	Node* tempHead = other.m_head;
+	other.m_head = m_head;
+	m_head = tempHead;
 
 }
 
 
-void Set::dump() const
+
+
+
+
+
+void Set::dump() const //delete!!
 {
 	cerr << "The size of the Set is: " << m_size << endl;
 	cerr << "The items in the Set are: " << endl;
