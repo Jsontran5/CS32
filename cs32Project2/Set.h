@@ -3,16 +3,16 @@
 
 
 #include <string>
-using ItemType = unsigned long; //change back to std::string
+using ItemType = std::string; //change back to std::string
 
 class Set
 {
     public:
         Set();
 
-        //~Set();
-       // Set(const Set& other);
-        //Set& operator=(const Set& rhs);
+        ~Set();
+        Set(const Set& other);
+        Set& operator=(const Set& rhs);
 
         bool empty() const;
         int size() const;
@@ -20,7 +20,9 @@ class Set
         bool erase(const ItemType& value);
         bool contains(const ItemType& value) const;
         bool get(int pos, ItemType& value) const;
-        //void swap(Set& other);
+        void swap(Set& other);
+        
+        
         void dump() const; // just testing delete after
 
 
@@ -33,13 +35,12 @@ class Set
         };
     
         Node* m_head;
-        Node* m_tail;
         int m_size;
 };
 
 
-    //void unite(const Set& s1, const Set& s2, Set& result);
-    //void butNot(const Set& s1, const Set& s2, Set& result);
+    void unite(const Set& s1, const Set& s2, Set& result);
+    void butNot(const Set& s1, const Set& s2, Set& result);
 
 
 #endif

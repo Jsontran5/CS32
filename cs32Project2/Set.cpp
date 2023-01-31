@@ -55,7 +55,7 @@ Set::Set(const Set& other)
 
 	while (otherNodes != other.m_head)
 	{
-		Node* thisNodes = m_head->next;
+		
 
 		Node* copy = new Node;
 		copy->m_item = otherNodes->m_item;
@@ -64,6 +64,7 @@ Set::Set(const Set& other)
 		thisNodes->next = copy;
 		m_head->prev = copy;
 
+		thisNodes = thisNodes->next;
 		otherNodes = otherNodes->next;
 	}
 
@@ -76,7 +77,7 @@ Set& Set::operator=(const Set& rhs)
 		return *this;
 	}
 
-	Set temp = rhs;
+	Set temp(rhs);
 	swap(temp);
 	return *this;
 
@@ -211,8 +212,62 @@ void Set::swap(Set& other)
 
 }
 
+void unite(const Set& s1, const Set& s2, Set& result)
+{
+	if (&s1 == &s2 || &s2 == &result)
+	{
+		return;
+	}
 
 
+	Set temp;
+
+
+	for (int i = 0; i < s1.size(); i++)
+	{
+		ItemType value;
+		s1.get(i, value);
+		temp.insert(value);
+	}
+
+	for (int i = 0; i < s2.size(); i++)
+	{
+		ItemType value;
+		s2.get(i, value);
+		temp.insert(value);
+		if (temp.contains(value) == false)
+		{
+			temp.insert(value);
+		}
+
+	}
+	result = temp;
+
+}
+
+void butNot(const Set& s1, const Set& s2, Set& result)
+{
+	if (&s1 == &result)
+	{
+		return;
+	}
+
+	Set temp;
+
+	for (int i = 0; i < s1.size(); i++)
+	{
+		ItemType value;
+		s1.get(i, value);
+
+		if (s2.contains(value) == false)
+		{
+			temp.insert(value);
+		}
+	}
+
+	result = temp;
+
+}
 
 
 
