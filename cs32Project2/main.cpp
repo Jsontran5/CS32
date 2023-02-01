@@ -1,102 +1,182 @@
 #include "Set.h"
-#include <string>
 #include <iostream>
 #include <cassert>
 using namespace std;
 
 void test()
 {
-	Set s;
-	Set a;
+    Set test1;
+    Set test2;
+    
 
-	assert(s.empty()); // check to see if s set is empty
-	assert(a.empty()); // check to see if a set is empty
+    assert(test1.empty()); //constructed correctly
+    assert(test2.empty());
 
-	unsigned long x = 9876543;
-	assert(!s.get(42, x) && x == 9876543); // x unchanged by get failure
-	s.insert(123456789);
-	assert(s.size() == 1);
-	assert(s.get(0, x));
-	assert(x == 123456789);
-	s.erase(123456789); // erase 123456789
-	assert(!s.contains(123456789)); // check if it doesn't contain 123456789
-	assert(s.empty()); // check to see if the set is empty
-	s.insert(123);
-	assert(s.size() == 1); // check size = 1
-	s.insert(321);
-	assert(s.size() == 2); // check size = 2
-	s.insert(222);
-	assert(s.size() == 3); // check size = 3
-	assert(s.contains(123) && s.contains(222) && s.contains(321));
-	// check to see if all numbers are in the set
+    test1.insert(1); //empty insert
+    test1.insert(3); //normal insert
+    test1.insert(2);
+    test1.insert(4);
+    test1.insert(2);
 
-	a.insert(987); // add 987
-	a.insert(789); // add 789
+    assert(test1.size() == 4); //correctly updates size
+    //contains functions works correctly
+    assert(test1.contains(1) && test1.contains(2) && test1.contains(3)
+        && test1.contains(4)); //inserts only unique numbers
+    //get and sorting correctly
+   unsigned long x = 9;
+    test1.get(0, x); 
+    assert(x == 1); //get functions returns lowest value if pos =0
+    test1.get(20, x);
+    assert(x == 1); //x stays the same since pos is out of range
+    test1.get(3, x);
+    assert(x == 4); //x gets the highest value of the linked list 
 
-	//check swap function
-	s.swap(a);
+    //checking assignment operator
+    test2 = test1;
+    assert(test2.size() == 4); //same size
+    assert(test2.contains(1) && test2.contains(2) && test2.contains(3)
+        && test2.contains(4));  //same items
+    //get and sorting correctly
+    unsigned long y = 9;
+    test2.get(0, y);
+    assert(y == 1); //get functions returns lowest value if pos =0
+    test2.get(20, y);
+    assert(y == 1); //x stays the same since pos is out of range
+    test2.get(3, y);
+    assert(y == 4); //x gets the highest value of the linked list 
 
-	unsigned long temp = 0;
-	a.get(0, temp);
-	assert(temp == 123); //check to see if temp was correctly changed
+    //checking copy contructor
+    Set test3 = test1;
+    assert(test3.size() == 4); //same size
+    assert(test3.contains(1) && test3.contains(2) && test3.contains(3)
+        && test3.contains(4));  //same items
+    //get and sorting correctly with the copy constructor
+    unsigned long z = 9;
+    test2.get(0, z);
+    assert(z == 1); //get functions returns lowest value if pos =0
+    test2.get(20, z);
+    assert(z == 1); //x stays the same since pos is out of range
+    test2.get(3, z);
+    assert(z == 4); //x gets the highest value of the linked list 
 
-	assert(!a.get(50, temp)); // get failure
+    
+    Set test4;
 
-	assert(a.contains(123) && a.contains(222) && a.contains(321));
-	//check for correct swap
+    test4.insert(1); //empty insert
+    test4.insert(3); //normal insert
+    test4.insert(2);
+    test4.insert(4);
+    test4.insert(2);
+    test4.insert(5);
+    test4.insert(7);
+    test4.insert(6);
 
-	assert(s.contains(789) && s.contains(987));//check for correct swap
+    assert(test4.size() == 7);//inserts only unique
+    assert(test4.contains(1) && test4.contains(2) && test4.contains(3)
+        && test4.contains(4) && test4.contains(5) && test4.contains(6) && test4.contains(7)); //expected numbers are inserted in
+    unsigned long g = 9;
+    test2.get(2, g); //get, transfers the 3rd biggest in to g.
+    assert(g == 3); //correctly sorted check
+    //erase
+    test4.erase(2);
+    test4.erase(5);
+    test4.erase(7);
+    test4.erase(6);
+    assert(test4.size() == 3); //erased these 4 numbers correctly
+    assert(test4.contains(7) == false); //contains is correct
+    assert(!test4.erase(6) && test4.size() == 3); //doesn't erase 6 and keeps same size
 
-	a.erase(321);
-	assert(a.contains(123)); // check to see if the set still contains 123
-	assert(!a.contains(321)); // check to see if the set doesn't contain 321
-	assert(a.contains(222)); // check to see if the set still contains 222
-	assert(a.size() == 2); // check the size = 2
+    Set test5;
+    Set test6;
 
-	//copy constructor
-	Set b(a);
-	assert(a.contains(123)); // check to see if the set contains 123
-	assert(!a.contains(321)); // check to see if the set doesn't contain 321
-	assert(a.contains(222)); // check to see if the set contains 222
-	assert(a.size() == 2); // check the size = 2
+    test5.insert(1); //empty insert
+    test5.insert(2); //normal insert
+    test5.insert(3);
+    test5.insert(4);
 
-	//test equal operator
-	b = s;
-	assert(s.contains(789) && s.contains(987));//check for correct operator
+    test6.insert(6); //empty insert
+    test6.insert(7); //normal insert
+    test6.insert(8);
+    test6.insert(9);
+    test6.insert(10);
+    //swap
+    test5.swap(test6);
+    assert(test5.size() == 5); //sizes swapped
+    assert(test6.size() == 4);
+    assert(test5.contains(6) && test5.contains(7) && test5.contains(8) && test5.contains(9) && test5.contains(10)); //test5 now contains tes6 items
+    assert(test6.contains(1) && test6.contains(2) && test6.contains(3) && test6.contains(4)); //test 6 now contains test5 items
 
-	//test out unite function
-	unite(s, a, b);
-	assert(s.contains(789) && s.contains(987));//check for correct unite
-	assert(a.contains(123)); // check to see if the set contains 123
-	assert(!a.contains(321)); // check to see if the set doesn't contain 321
-	assert(a.contains(222)); // check to see if the set contains 222
+    //unite
+    Set test7;
+    Set test8;
+    //1,2,3,4
+    test7.insert(1); 
+    test7.insert(2); 
+    test7.insert(3);
+    test7.insert(4);
+    assert(test7.size() == 4);
+    //6,7,8,9,10
+    test8.insert(6);
+    test8.insert(7); 
+    test8.insert(8);
+    test8.insert(3);
+    test8.insert(4);
+    test8.insert(9);
+    test8.insert(10);
+    assert(test8.size() == 7);
 
-	Set c, d, e;
-	//add 1,2,3,4
-	c.insert(1);
-	c.insert(2);
-	c.insert(3);
-	c.insert(4);
+    Set result1;
+    unite(test7, test8, result1);
+   
+    assert(result1.size() == 9); //only unites the unique numbers
+    assert(result1.contains(1) && result1.contains(2) && result1.contains(3) && result1.contains(4) && result1.contains(6) && result1.contains(7)
+        && result1.contains(8) && result1.contains(9) && result1.contains(10)); //result1 contains the expected numbers
 
-	//add 3,4,5,6
-	d.insert(3);
-	d.insert(4);
-	d.insert(5);
-	d.insert(6);
+    //unite aliasing check
+    unite(test7, test8, test7); //first set and result set are the same
+    assert(test7.size() == 9); //still needs to add in the unique numbers of the second set
+    assert(test7.contains(1) && test7.contains(2) && test7.contains(3) && test7.contains(4) && test7.contains(6) && test7.contains(7)
+        && test7.contains(8) && test7.contains(9) && test7.contains(10)); //test7 should also include #s from test8
 
-	//subtract the two and make sure 3,4 are gone
-	butNot(c, d, e);
-	assert(e.contains(1) && e.contains(2));
+    //butNot
+    Set test9;
+    Set test10;
+    //1,2,3,4
+    test9.insert(1);
+    test9.insert(2);
+    test9.insert(3);
+    test9.insert(4);
+    //3,4,5,6
+    test10.insert(3);
+    test10.insert(4);
+    test10.insert(5);
+    test10.insert(6);
 
-	//unite c and d and make sure it's only 1,2,5,6
-	unite(c, d, e);
-	assert(e.contains(1) && e.contains(2) && e.contains(5) && e.contains(6));
+    Set result2;
+    butNot(test9, test10, result2);
+    assert(result2.size() == 2); //only includes 1st set unique items
+    assert(result2.contains(1) && result2.contains(2));//which are 1 and 2
 
-	//test out aliasing and make sure it's the same
-	unite(e, d, e);
-	assert(e.contains(1) && e.contains(2) && e.contains(5) && e.contains(6));
-	butNot(e, e, e);
-	assert(e.empty());
+    //aliasing check
+    butNot(test9, test9, test9); 
+    assert(test9.size() == 0);//if set1 and set 2 are the same then the result has to be nothing
+    
+    //reinsert the #s
+    test9.insert(1);
+    test9.insert(2);
+    test9.insert(3);
+    test9.insert(4);
+    
+    test10.insert(3);
+    test10.insert(4);
+    test10.insert(5);
+    test10.insert(6);
+    //aliasing check for s1 and result
+    butNot(test9, test10, test9);
+    assert(test9.size() == 2); //should still only contain the 2 unique and make sure none of s2 is in it.
+
+
+
 }
 
 int main()
