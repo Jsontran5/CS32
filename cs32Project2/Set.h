@@ -3,7 +3,7 @@
 
 
 #include <string>
-using ItemType = std::string; //change back to std::string
+using ItemType = unsigned long; //change back to std::string
 
 class Set
 {
