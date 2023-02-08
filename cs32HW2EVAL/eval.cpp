@@ -6,7 +6,10 @@
 #include "Set.h"  //  type alias: char
 using namespace std;
 
-//add the 3 protypes
+
+int precedence(char input);
+bool isvalidInfix(string infix);
+void inToPost(string infix, string& postfix);
 
 
 void inToPost(string infix, string& postfix)
@@ -17,10 +20,12 @@ void inToPost(string infix, string& postfix)
 	for (int i = 0; i < infix.size(); i++)
 	{
 		char temp = infix[i];
-		char top = signs.top();
+		
 
 		switch (temp)
 		{
+			case ' ':
+				break;
 			case '(':
 				signs.push(temp);
 				break;
@@ -199,4 +204,78 @@ bool isvalidInfix(string infix)
 int evaluate(string infix, const Set& trueValues, const Set& falseValues, string& postfix, bool& result)
 {
 	//infix check
+	if (!isvalidInfix)
+	{
+		return 1;
+	}
+
+	inToPost(infix, postfix);
+
+	bool contain = true;
+	for (int i = 0; i < postfix.size(); i++)
+	{
+		char check = postfix[i];
+
+		if (isalpha(check))
+		{
+			if ((trueValues.contains(check) && !falseValues.contains(check)) || (falseValues.contains(check) && !trueValues.contains(check)))
+			{
+				continue;
+			}
+			else
+			{
+				contain = false;
+			}
+		}
+	}
+
+	if (contain == true)
+	{
+		stack<bool> operand;
+		
+		for (int i = 0; i < postfix.size(); i++)
+		{
+			if (isalpha(postfix[i]))
+			{
+				if (trueValues.contains(postfix[i]))
+				{
+					operand.push(true);
+				}
+				else
+				{
+					operand.push(false);
+				}
+			}
+			else if (postfix[i] == '|' || postfix[i] == '&')
+			{
+				bool operand2 = operand.top();
+				operand.pop();
+				bool operand1 = operand.top();
+				operand.pop();
+				//prone to bug cuz !
+				switch (postfix[i])
+				{
+					case '&':
+						operand.push(operand1 && operand2);
+						break;
+					case '|':
+						operand.push(operand1 || operand2);
+						break;
+
+				}
+			}
+			else if (postfix[i] == '!')
+			{
+				bool front = operand.top();
+				operand.pop();
+				operand.push(!front);
+			}
+		}
+
+		result = operand.top();
+
+
+		return 0;
+	}
+
 }
