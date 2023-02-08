@@ -10,13 +10,13 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
 
 class Coord
 {
-    public:
-        Coord(int r, int c) : m_row(r), m_col(c) {}
-        int r() const { return m_row; }
-        int c() const { return m_col; }
-    private:
-        int m_row;
-        int m_col;
+public:
+    Coord(int r, int c) : m_row(r), m_col(c) {}
+    int r() const { return m_row; }
+    int c() const { return m_col; }
+private:
+    int m_row;
+    int m_col;
 };
 
 
@@ -41,7 +41,7 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
             return true;
         }
 
-        if (maze[current.r()][current.c()+1] == '.') //east
+        if (maze[current.r()][current.c() + 1] == '.') //east
         {
             Coord point(current.r(), current.c() + 1);
             coordStack.push(point);
@@ -50,21 +50,21 @@ bool pathExists(string maze[], int nRows, int nCols, int sr, int sc, int er, int
         }
         if (maze[current.r() - 1][current.c()] == '.') //north
         {
-            Coord point(current.r()-1, current.c());
+            Coord point(current.r() - 1, current.c());
             coordStack.push(point);
-            maze[current.r()-1][current.c()] = '#';
+            maze[current.r() - 1][current.c()] = '#';
         }
-        if (maze[current.r()][current.c()-1] == '.')//west
+        if (maze[current.r()][current.c() - 1] == '.')//west
         {
-            Coord point(current.r(), current.c()-1);
+            Coord point(current.r(), current.c() - 1);
             coordStack.push(point);
             maze[current.r()][current.c() - 1] = '#';
         }
-        if (maze[current.r()+1][current.c()] == '.')//south
+        if (maze[current.r() + 1][current.c()] == '.')//south
         {
-            Coord point(current.r()+1, current.c());
+            Coord point(current.r() + 1, current.c());
             coordStack.push(point);
-            maze[current.r()+1][current.c()] = '#';
+            maze[current.r() + 1][current.c()] = '#';
         }
     }
     return false;
@@ -79,7 +79,7 @@ int main() {
                  "XXX......X",
                  "X.X.XXXX.X",
                  "X.XXX....X",
-                 "X...X..X#X",
+                 "X...X..X.X",
                  "XXXXXXXXXX"
     };
 
