@@ -6,6 +6,71 @@
 #include "Set.h"  //  type alias: char
 using namespace std;
 
+//add the 3 protypes
+
+
+void inToPost(string infix, string& postfix)
+{
+	postfix = "";
+	stack<char> signs;
+
+	for (int i = 0; i < infix.size(); i++)
+	{
+		char temp = infix[i];
+		char top = signs.top();
+
+		switch (temp)
+		{
+			case '(':
+				signs.push(temp);
+				break;
+			case ')':
+				while (signs.top() != '(')
+				{
+					postfix += signs.top();
+					signs.pop();
+				}
+				signs.pop();
+				break;
+			case '&':
+			case '!':
+			case '|':
+				while (!signs.empty() && signs.top() != '(' && precedence(temp) <= precedence(signs.top()))
+				{
+					postfix += signs.top();
+					signs.pop();
+				}
+				signs.push(temp);
+				break;
+			default:
+				postfix += temp;
+		}
+	}
+	while (!signs.empty())
+	{
+		postfix += signs.top();
+		signs.pop();
+	}
+}
+
+int precedence(char input)
+{
+	if (input == '!') 
+	{
+		return 3;
+	}
+	else if (input == '&')
+	{
+		return 2;
+	}
+	else if (input == '|')
+	{
+		return 1;
+	}
+	else
+		return 0;
+}
+
 
 bool isvalidInfix(string infix)
 {
@@ -119,7 +184,7 @@ bool isvalidInfix(string infix)
 		}
 
 	}
-	
+
 	if (!isalpha(check.top()) && check.top() != ')')
 	{
 		return false;
@@ -128,9 +193,6 @@ bool isvalidInfix(string infix)
 	{
 		return true;
 	}
-
-
-	
 }
 
 
