@@ -12,6 +12,101 @@ bool isvalidInfix(string infix);
 void inToPost(string infix, string& postfix);
 
 
+int evaluate(string infix, const Set& trueValues, const Set& falseValues, string& postfix, bool& result)
+{
+	//infix check
+	if (!isvalidInfix(infix))
+	{
+		return 1;
+	}
+
+	inToPost(infix, postfix);
+
+	bool contain = true;
+	for (int i = 0; i < postfix.size(); i++)
+	{
+		char check = postfix[i];
+
+		if (isalpha(check))
+		{
+			if ((trueValues.contains(check) && !falseValues.contains(check)) || (falseValues.contains(check) && !trueValues.contains(check)))
+			{
+				continue;
+			}
+			else
+			{
+				contain = false;
+			}
+		}
+	}
+
+	if (contain == true)
+	{
+		stack<bool> operand;
+
+		for (int i = 0; i < postfix.size(); i++)
+		{
+			if (isalpha(postfix[i]))
+			{
+				if (trueValues.contains(postfix[i]))
+				{
+					operand.push(true);
+				}
+				else
+				{
+					operand.push(false);
+				}
+			}
+			else if (postfix[i] == '|' || postfix[i] == '&')
+			{
+				bool operand2 = operand.top();
+				operand.pop();
+				bool operand1 = operand.top();
+				operand.pop();
+				switch (postfix[i])
+				{
+				case '&':
+					operand.push(operand1 && operand2);
+					break;
+				case '|':
+					operand.push(operand1 || operand2);
+					break;
+
+				}
+			}
+			else if (postfix[i] == '!')
+			{
+				bool front = operand.top();
+				operand.pop();
+				operand.push(!front);
+			}
+		}
+
+		result = operand.top();
+
+
+		return 0;
+	}
+	else
+	{
+		for (int i = 0; i < postfix.size(); i++)
+		{
+			char check = postfix[i];
+			if (!falseValues.contains(check) && !trueValues.contains(check))
+			{
+				return 2;
+			}
+			else if (falseValues.contains(check) && trueValues.contains(check))
+			{
+				return 3;
+			}
+		}
+		return 3;
+	}
+
+}
+
+
 void inToPost(string infix, string& postfix)
 {
 	postfix = "";
@@ -20,35 +115,35 @@ void inToPost(string infix, string& postfix)
 	for (int i = 0; i < infix.size(); i++)
 	{
 		char temp = infix[i];
-		
+
 
 		switch (temp)
 		{
-			case ' ':
-				break;
-			case '(':
-				signs.push(temp);
-				break;
-			case ')':
-				while (signs.top() != '(')
-				{
-					postfix += signs.top();
-					signs.pop();
-				}
+		case ' ':
+			break;
+		case '(':
+			signs.push(temp);
+			break;
+		case ')':
+			while (signs.top() != '(')
+			{
+				postfix += signs.top();
 				signs.pop();
-				break;
-			case '&':
-			case '!':
-			case '|':
-				while (!signs.empty() && signs.top() != '(' && precedence(temp) <= precedence(signs.top()))
-				{
-					postfix += signs.top();
-					signs.pop();
-				}
-				signs.push(temp);
-				break;
-			default:
-				postfix += temp;
+			}
+			signs.pop();
+			break;
+		case '&':
+		case '!':
+		case '|':
+			while (!signs.empty() && signs.top() != '(' && precedence(temp) <= precedence(signs.top()))
+			{
+				postfix += signs.top();
+				signs.pop();
+			}
+			signs.push(temp);
+			break;
+		default:
+			postfix += temp;
 		}
 	}
 	while (!signs.empty())
@@ -60,7 +155,7 @@ void inToPost(string infix, string& postfix)
 
 int precedence(char input)
 {
-	if (input == '!') 
+	if (input == '!')
 	{
 		return 3;
 	}
@@ -93,7 +188,7 @@ bool isvalidInfix(string infix)
 			noBlank += infix[i];
 		}
 	}
-	
+
 	if (noBlank.size() == 0)
 	{
 		return false;
@@ -107,7 +202,7 @@ bool isvalidInfix(string infix)
 
 	if (isalpha(noBlank[0]))
 	{
-		if(isupper(noBlank[0]))
+		if (isupper(noBlank[0]))
 		{
 			return false;
 		}
@@ -149,43 +244,43 @@ bool isvalidInfix(string infix)
 
 		switch (temp)
 		{
-			case '!':
-				if (top == ')' || isalpha(top))
-					return false;
-				check.push(temp);
-				break;
-			case '&':
-				if (!isalpha(top) && top != ')')
-					return false;
-				check.push(temp);
-				break;
-			case '|':
-				if (!isalpha(top) && top != ')')
-					return false;
-				check.push(temp);
-				break;
-			case '(':
-				if (isalpha(top) || top == ')')
-				{
-					return false;
-				}
-				check.push(temp);
-				break;
-			case ')':
-				if (!isalpha(top) && top != ')')
-					return false;
-				check.push(temp);
-				break;
-			default:
-				if (!isalpha(temp) && !islower(temp))
-				{
-					return false;
-				}
-				if (top == ')' || isalpha(top))
-				{
-					return false;
-				}
-				return true;
+		case '!':
+			if (top == ')' || isalpha(top))
+				return false;
+			check.push(temp);
+			break;
+		case '&':
+			if (!isalpha(top) && top != ')')
+				return false;
+			check.push(temp);
+			break;
+		case '|':
+			if (!isalpha(top) && top != ')')
+				return false;
+			check.push(temp);
+			break;
+		case '(':
+			if (isalpha(top) || top == ')')
+			{
+				return false;
+			}
+			check.push(temp);
+			break;
+		case ')':
+			if (!isalpha(top) && top != ')')
+				return false;
+			check.push(temp);
+			break;
+		default:
+			if (!isalpha(temp) && !islower(temp))
+			{
+				return false;
+			}
+			if (top == ')' || isalpha(top))
+			{
+				return false;
+			}
+			return true;
 		}
 
 	}
@@ -201,81 +296,41 @@ bool isvalidInfix(string infix)
 }
 
 
-int evaluate(string infix, const Set& trueValues, const Set& falseValues, string& postfix, bool& result)
+
+int main()
 {
-	//infix check
-	if (!isvalidInfix)
-	{
-		return 1;
-	}
+	string trueChars = "tywz";
+	string falseChars = "fnx";
+	Set trues;
+	Set falses;
+	for (int k = 0; k < trueChars.size(); k++)
+		trues.insert(trueChars[k]);
+	for (int k = 0; k < falseChars.size(); k++)
+		falses.insert(falseChars[k]);
 
-	inToPost(infix, postfix);
-
-	bool contain = true;
-	for (int i = 0; i < postfix.size(); i++)
-	{
-		char check = postfix[i];
-
-		if (isalpha(check))
-		{
-			if ((trueValues.contains(check) && !falseValues.contains(check)) || (falseValues.contains(check) && !trueValues.contains(check)))
-			{
-				continue;
-			}
-			else
-			{
-				contain = false;
-			}
-		}
-	}
-
-	if (contain == true)
-	{
-		stack<bool> operand;
-		
-		for (int i = 0; i < postfix.size(); i++)
-		{
-			if (isalpha(postfix[i]))
-			{
-				if (trueValues.contains(postfix[i]))
-				{
-					operand.push(true);
-				}
-				else
-				{
-					operand.push(false);
-				}
-			}
-			else if (postfix[i] == '|' || postfix[i] == '&')
-			{
-				bool operand2 = operand.top();
-				operand.pop();
-				bool operand1 = operand.top();
-				operand.pop();
-				//prone to bug cuz !
-				switch (postfix[i])
-				{
-					case '&':
-						operand.push(operand1 && operand2);
-						break;
-					case '|':
-						operand.push(operand1 || operand2);
-						break;
-
-				}
-			}
-			else if (postfix[i] == '!')
-			{
-				bool front = operand.top();
-				operand.pop();
-				operand.push(!front);
-			}
-		}
-
-		result = operand.top();
-
-
-		return 0;
-	}
-
+	string pf;
+	bool answer;
+	assert(evaluate("w| f", trues, falses, pf, answer) == 0 && pf == "wf|" && answer);
+	assert(evaluate("y|", trues, falses, pf, answer) == 1);
+	assert(evaluate("n t", trues, falses, pf, answer) == 1);
+	assert(evaluate("nt", trues, falses, pf, answer) == 1);
+	assert(evaluate("()", trues, falses, pf, answer) == 1);
+	assert(evaluate("()z", trues, falses, pf, answer) == 1);
+	assert(evaluate("y(n|y)", trues, falses, pf, answer) == 1);
+	assert(evaluate("t(&n)", trues, falses, pf, answer) == 1);
+	assert(evaluate("(n&(t|y)", trues, falses, pf, answer) == 1);
+	assert(evaluate("n+y", trues, falses, pf, answer) == 1);
+	assert(evaluate("", trues, falses, pf, answer) == 1);
+	assert(evaluate("f  |  !f & (t&n) ", trues, falses, pf, answer) == 0
+		&& pf == "ff!tn&&|" && !answer);
+	assert(evaluate(" x  ", trues, falses, pf, answer) == 0 && pf == "x" && !answer);
+	trues.insert('x');
+	assert(evaluate("((x))", trues, falses, pf, answer) == 3);
+	falses.erase('x');
+	assert(evaluate("((x))", trues, falses, pf, answer) == 0 && pf == "x" && answer);
+	trues.erase('w');
+	assert(evaluate("w| f", trues, falses, pf, answer) == 2);
+	falses.insert('w');
+	assert(evaluate("w| f", trues, falses, pf, answer) == 0 && pf == "wf|" && !answer);
+	cout << "Passed all tests" << endl;
 }
