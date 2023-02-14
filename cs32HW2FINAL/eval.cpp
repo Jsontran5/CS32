@@ -208,6 +208,24 @@ bool isvalidInfix(string infix)
 		}
 	}
 
+
+	//uppercase check
+	for (int i = 0; i < noBlank.size(); i++)
+	{
+		if (isalpha(noBlank[i]))
+		{
+			if (isupper(noBlank[i]))
+			{
+				return false;
+			}
+		}
+	}
+
+
+
+
+
+
 	//parenthesis checker
 	stack<char> parenthesis;
 	for (int i = 0; i < noBlank.size(); i++)
