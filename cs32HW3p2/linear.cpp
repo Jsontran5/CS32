@@ -1,9 +1,5 @@
 
 
-bool somePredicate(double x) //DELETE
-{
-	return x < 0;
-}
 
 // Return true if the somePredicate function returns true for at
 	  // least one of the array elements; return false otherwise.
@@ -122,20 +118,21 @@ int indexOfMinimum(const double a[], int n)
 	 //    10 20 20
 bool isIn(const double a1[], int n1, const double a2[], int n2)
 {
-	if (n2 < n1 || n2<=0)
+	if (n1 <= 0)
+		return true;
+
+	if (n2<n1)
 	{
 		return false;
 	}
 	
-	if (n1 <= 0)
-		return true;
+	
 
 	if (a1[0] == a2[0])
 		return isIn(a1 + 1, n1 - 1, a2 + 1, n2 - 1);
-	else
-	{
-		return isIn(a1, n1, a2+1 , n2-1 );
-	}
+	
+	return isIn(a1, n1, a2+1 , n2-1);
+	
 	
 }
 
