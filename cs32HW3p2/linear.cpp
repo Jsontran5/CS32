@@ -119,7 +119,10 @@ int indexOfMinimum(const double a[], int n)
 bool isIn(const double a1[], int n1, const double a2[], int n2)
 {
 	if (n1 <= 0)
+	{
 		return true;
+	}
+		
 
 	if (n2<n1)
 	{

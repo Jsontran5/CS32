@@ -1,8 +1,3 @@
-#include <iostream>
-#include <cassert>
-using namespace std; //DELETE HERE
-
-
 
 
 // Return the number of ways that all n1 elements of a1 appear in
@@ -130,35 +125,3 @@ void order(double a[], int n)
 
 }
 
-int main()
-{
-	double d[] = { -1, 2, -3, -3, -1, 4, -5,2,6,90 };
-	int arrLen = 10;
-	cout << "before order" << endl;
-	for (int i = 0; i < arrLen; i++) {
-		cout << d[i] << endl;
-	}
-	order(d, arrLen);
-	cout << "after order" << endl;
-	for (int i = 0; i < arrLen; i++) {
-		cout << d[i] << endl;
-	}
-	double a2[] = { 10, 50, 40, 20, 50, 40, 30 };
-	double a11[] = { 10, 20, 40 };
-	double a12[] = { 10, 40, 30 };
-	double a13[] = { 20, 10, 40 };
-	double a14[] = { 50, 40, 30 };
-	assert(countIsIn(a11, 3, a2, 7) == 1);
-	
-	assert(countIsIn(a12, 3, a2, 7) == 2);
-	assert(countIsIn(a13, 3, a2, 7) == 0);
-	assert(countIsIn(a14, 3, a2, 7) == 3);
-	
-	assert(countIsIn(a14, 0, a2, 0) == 1);
-	cout << "TEST " << countIsIn(a14, -1, a2, 0) << endl;
-	assert(countIsIn(a14, -1, a2, 0) == 1);
-	assert(countIsIn(a14, -1, a2, -1) == 1);
-	assert(countIsIn(a14, 1, a2, 0) == 0);
-	assert(countIsIn(a14, 1, a2, -1) == 0);
-	cout << "FINISHED" << endl;
-}
