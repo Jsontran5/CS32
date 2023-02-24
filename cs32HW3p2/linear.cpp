@@ -1,5 +1,10 @@
+#include <iostream>
+using namespace std;
 
-
+bool somePredicate(double x)
+{
+	return x < 0;
+}
 
 // Return true if the somePredicate function returns true for at
 	  // least one of the array elements; return false otherwise.
@@ -139,3 +144,8 @@ bool isIn(const double a1[], int n1, const double a2[], int n2)
 	
 }
 
+int main()
+{
+	double a2[] = { 10, 50, 40, -20, 50, 40, 30 };
+	cout << indexOfMinimum(a2, 7);
+}
