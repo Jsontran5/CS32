@@ -1,6 +1,8 @@
 #include "StudentWorld.h"
 #include "GameConstants.h"
 #include <string>
+#include <sstream>
+#include "Actor.h"
 using namespace std;
 
 GameWorld* createStudentWorld(string assetPath)
@@ -17,64 +19,75 @@ StudentWorld::StudentWorld(string assetPath)
 
 int StudentWorld::init() //work on this first
 {
-        Board bd;
-        string board_file = assetPath() + "board01.txt";
-        Board::LoadResult result = bd.loadBoard(board_file);
-        if (result == Board::load_fail_file_not_found)
-            cerr << "Could not find board01.txt data file\n";
-        else if (result == Board::load_fail_bad_format)
-            cerr << "Your board was improperly formatted\n";
-        else if (result == Board::load_success) {
-            cerr << "Successfully loaded board\n";
+    Board bd;
+    int boardNum = getBoardNumber();
+    ostringstream oss;
+    oss << "board0" << boardNum << ".txt";
 
-            for (int i = 0; i < BOARD_HEIGHT; i++)
+    string board_file = assetPath() + oss.str();
+    Board::LoadResult result = bd.loadBoard(board_file);
+    if (result == Board::load_fail_file_not_found)
+        cerr << "Could not find board01.txt data file\n";
+    else if (result == Board::load_fail_bad_format)
+        cerr << "Your board was improperly formatted\n";
+    else if (result == Board::load_success) {
+        cerr << "Successfully loaded board\n";
+
+        for (int i = 0; i < BOARD_WIDTH; i++)
+        {
+            for (int j = 0; j < BOARD_HEIGHT; j++)
             {
-                for (int j = 0; j < BOARD_WIDTH; j++)
-                {
-                    Board::GridEntry ge = bd.getContentsOf(i, j);
-                    switch (ge) {
-                    case Board::empty: //calling new for each, PEACH/blue coin square
-                        cout << "Location 5,10 is empty\n";
-                        break;
-                    case Board::boo:
-                        cout << "Location 5,10 has a Boo and a blue coin square\n";
-                        break;
-                    case Board::bowser:
-                        
-                            cout << "Location 5,10 has a Bowser and a blue coin square\n";
-                        break;
-                    case Board::player:
-                        cout << "Location 5,10 has Peach & Yoshi and a blue coin square\n";
-                        break;
-                    case Board::red_coin_square:
-                        cout << "Location 5,10 has a red coin square\n";
-                        break;
-                    case Board::blue_coin_square:
-                        cout << "Location 5,10 has a blue coin square\n";
-                        break;
+                Board::GridEntry ge = bd.getContentsOf(i, j);
+                switch (ge) {
+                case Board::empty:
+
+                    break;
+                case Board::boo:
+
+                    break;
+                case Board::bowser:
+
+
+                    break;
+                case Board::player:
+                    m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT); //added in PEACH
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::red_coin_square:
+
+                    break;
+                case Board::blue_coin_square:
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+
+
+                    break;
                 }
             }
-           
+
         }
-
-
-
-    return GWSTATUS_CONTINUE_GAME;
+        return GWSTATUS_CONTINUE_GAME;
+    }
 }
 
 int StudentWorld::move()
 {
-    // This code is here merely to allow the game to build, run, and terminate after you hit ESC.
-    // Notice that the return value GWSTATUS_NOT_IMPLEMENTED will cause our framework to end the game.
+    m_peach->doSomething(); //add for yoshi later
 
-    setGameStatText("Game will end in a few seconds");
-    
-    /*if (timeRemaining() <= 0)
-		return GWSTATUS_CONTINUE_GAME;*/
-    
-	return GWSTATUS_CONTINUE_GAME;
+    for (int i = 0; i < actors.size(); i++)
+    {
+        actors[i]->doSomething();
+    }
+
+    return GWSTATUS_CONTINUE_GAME;
 }
 
 void StudentWorld::cleanUp()
 {
+    delete m_peach; //add for yoshi later
+
+    for (int i = 0; i < actors.size(); i++)
+    {
+        delete actors[i];
+    }
+
 }

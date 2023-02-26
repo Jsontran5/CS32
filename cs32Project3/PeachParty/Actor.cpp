@@ -4,8 +4,39 @@
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp 
 
-Actor::Actor(int imageID, int startX, int startY, StudentWorld* myWorld, int dir = right, int depth = 0, double size = 1.0)
-	: GraphObject(imageID, startX, startY, myWorld, dir, depth, size)
+//Actor implementation
+
+Actor::Actor(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int depth)
+:GraphObject(imageID, startX, startY, dir, depth)
 {
 	m_world = myWorld;
+	m_isAlive = true;
+}
+
+bool Actor::isAlive()
+{
+	return m_isAlive;
+}
+
+StudentWorld* Actor::getWorld()
+{
+	return m_world;
+}
+
+
+//player implementation
+Player::Player(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int depth)
+	:Actor(myWorld, imageID, startX, startY,  dir, depth)
+{
+	 m_ticksToMove = 0;
+	 m_rollState = false;
+}
+
+
+
+//CoinSquare Implementation
+CoinSquare::CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int depth)
+	:Actor(myWorld, imageID, startX, startY,  dir, depth)
+{
+
 }
