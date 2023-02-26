@@ -118,10 +118,13 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
     int boardNum = getBoardNumber();
     ostringstream filename;
     filename << "board0" << boardNum << ".txt";
+    string board_file = assetPath() + filename.str();
+    Board::LoadResult result = bd.loadBoard(board_file);
     
 
-    //cout << "test " << x << " and" << y << endl;
-    
+   
+    if (dir == 180 || dir == 270)
+    {
         while (x % 16 != 0)
         {
             x++;
@@ -130,14 +133,24 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
         {
             y++;
         }
+    }
+        
     
     
     x = x / 16;
     y = y / 16;
 
-    
+   
 
-    cout << "test1 " << x << " and1 " << y << endl;
+    /*if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
+    {
+        if (bd.getContentsOf(x, y) != Board::empty)
+            return true;
+    }*/
+
+    //return false;
+    //cout << "test1 " << x << " and1 " << y << endl;
+
     for (int i = 0; i < actors.size(); i++)
     {
         int squareX, squareY;
@@ -159,9 +172,9 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
         squareY = squareY / 16;
      
 
-       cout << squareX << "and " << squareY << endl;
+       
 
-        if ((squareX < BOARD_WIDTH && squareX > 0) && (squareY < BOARD_HEIGHT && squareY > 0))
+        if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
         {
             if (squareX == x && squareY == y )
             {
