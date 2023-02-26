@@ -21,10 +21,10 @@ int StudentWorld::init() //work on this first
 {
     Board bd;
     int boardNum = getBoardNumber();
-    ostringstream oss;
-    oss << "board0" << boardNum << ".txt";
+    ostringstream filename;
+    filename << "board0" << boardNum << ".txt";
 
-    string board_file = assetPath() + oss.str();
+    string board_file = assetPath() + filename.str();
     Board::LoadResult result = bd.loadBoard(board_file);
     if (result == Board::load_fail_file_not_found)
         cerr << "Could not find board01.txt data file\n";
@@ -40,28 +40,48 @@ int StudentWorld::init() //work on this first
                 Board::GridEntry ge = bd.getContentsOf(i, j);
                 switch (ge) {
                 case Board::empty:
-
                     break;
                 case Board::boo:
-
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::bowser:
 
-
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::player:
                     m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT); //added in PEACH
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::red_coin_square:
-
+                    actors.push_back(new CoinSquare(this, IID_RED_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::blue_coin_square:
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
-
-
+                    break;
+                case Board::up_dir_square:
+                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT)); //SPRITE OF DIRECTIONAL SQUARE CURRENTLY WRONG
+                    break;
+                case Board::down_dir_square:
+                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::left_dir_square:
+                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::right_dir_square:
+                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::event_square:
+                    actors.push_back(new CoinSquare(this, IID_EVENT_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::bank_square:
+                    actors.push_back(new CoinSquare(this, IID_BANK_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    break;
+                case Board::star_square:
+                    actors.push_back(new CoinSquare(this, IID_STAR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 }
+
+
             }
 
         }
@@ -84,10 +104,79 @@ int StudentWorld::move()
 void StudentWorld::cleanUp()
 {
     delete m_peach; //add for yoshi later
+    m_peach = nullptr;
 
     for (int i = 0; i < actors.size(); i++)
     {
         delete actors[i];
     }
+    actors.clear();
+}
+bool StudentWorld::isValidPos(int x, int y, int dir)
+{
+    Board bd;
+    int boardNum = getBoardNumber();
+    ostringstream filename;
+    filename << "board0" << boardNum << ".txt";
+    
 
+    //cout << "test " << x << " and" << y << endl;
+    
+        while (x % 16 != 0)
+        {
+            x++;
+        }
+        while (y % 16 != 0)
+        {
+            y++;
+        }
+    
+    
+    x = x / 16;
+    y = y / 16;
+
+    
+
+    cout << "test1 " << x << " and1 " << y << endl;
+    for (int i = 0; i < actors.size(); i++)
+    {
+        int squareX, squareY;
+        squareX= actors[i]->getX() ;
+        squareY = actors[i]->getY() ;
+
+        
+            while (squareX % 16 != 0)
+            {
+                squareX++;
+            }
+            while (squareY % 16 != 0)
+            {
+                squareY++;
+            }
+        
+
+        squareX = squareX / 16;
+        squareY = squareY / 16;
+     
+
+       cout << squareX << "and " << squareY << endl;
+
+        if ((squareX < BOARD_WIDTH && squareX > 0) && (squareY < BOARD_HEIGHT && squareY > 0))
+        {
+            if (squareX == x && squareY == y )
+            {
+                
+                
+                    return true;
+                
+               
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    return false;
 }
