@@ -41,7 +41,7 @@ void Player::doSomething()
 		if (action == ACTION_ROLL)
 		{
 			int die_roll = randInt(1, 10);
-			std::cout << die_roll << std::endl;
+			//std::cout << die_roll << std::endl;
 			m_ticksToMove = die_roll * 8;
 			m_waitingRoll = false;
 		}
