@@ -13,7 +13,7 @@ class StudentWorld : public GameWorld
 {
 public:
   StudentWorld(std::string assetPath);
-  //~StudentWorld() { cleanUp(); }
+  ~StudentWorld() { cleanUp(); }
   virtual int init();
   virtual int move();
   virtual void cleanUp();
@@ -28,6 +28,7 @@ private:
 	std::vector<Actor*> actors;
 	Player* m_peach;
 	Player* m_yoshi;
+	int m_bank;
 
 	
 

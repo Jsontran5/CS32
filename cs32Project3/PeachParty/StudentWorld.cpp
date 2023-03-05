@@ -15,6 +15,7 @@ GameWorld* createStudentWorld(string assetPath)
 StudentWorld::StudentWorld(string assetPath)
 : GameWorld(assetPath)
 {
+    m_bank = 0;
 }
 
 int StudentWorld::init() //work on this first
@@ -43,43 +44,46 @@ int StudentWorld::init() //work on this first
                 case Board::empty:
                     break;
                 case Board::boo: //add i nthe baddies
+                    actors.push_back(new Boo(this, IID_BOO, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::bowser:
-
+                    actors.push_back(new Bowser(this, IID_BOWSER, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::player:
+
                     m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 1); 
                     m_yoshi = new Player(this, IID_YOSHI, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 2);
+
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::red_coin_square:
-                    actors.push_back(new CoinSquare(this, IID_RED_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new CoinSquare(this, IID_RED_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, -3));
                     break;
                 case Board::blue_coin_square:
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::up_dir_square:
-                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT)); //SPRITE OF DIRECTIONAL SQUARE CURRENTLY WRONG
+                    actors.push_back(new DirectionalSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 90, 90)); //SPRITE OF DIRECTIONAL SQUARE CURRENTLY WRONG
                     break;
                 case Board::down_dir_square:
-                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new DirectionalSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 270, 270));
                     break;
                 case Board::left_dir_square:
-                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new DirectionalSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 180,180));
                     break;
                 case Board::right_dir_square:
-                    actors.push_back(new CoinSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new DirectionalSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 0,0));
                     break;
                 case Board::event_square:
-                    actors.push_back(new CoinSquare(this, IID_EVENT_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new EventSquare(this, IID_EVENT_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::bank_square:
-                    actors.push_back(new CoinSquare(this, IID_BANK_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new BankSquare(this, IID_BANK_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::star_square:
-                    actors.push_back(new CoinSquare(this, IID_STAR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new StarSquare(this, IID_STAR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 }
 
@@ -87,8 +91,10 @@ int StudentWorld::init() //work on this first
             }
 
         }
-        return GWSTATUS_CONTINUE_GAME;
     }
+
+    startCountdownTimer(99);
+    return GWSTATUS_CONTINUE_GAME;
 }
 
 int StudentWorld::move()
@@ -105,6 +111,94 @@ int StudentWorld::move()
         actors[i]->doSomething();
     }
 
+    stringstream status;
+
+    status << "P1 Roll: ";
+    status << m_peach->get_dice();
+    status << " Stars: ";
+    status << m_peach->get_stars();
+    status << " $$: ";
+    status << m_peach->get_coins();
+    
+    if (m_peach->has_vortex())
+    {
+        status << " VOR ";
+    }
+    else
+    {
+        status << " ";
+    }
+
+    status << "| Time: ";
+    status << timeRemaining();
+    status << " | Bank: ";
+    status << m_bank;
+
+    status << " |P2 ROLL: ";
+    status << m_yoshi->get_dice();
+    status << " Stars: ";
+    status << m_yoshi->get_stars();
+    status << " $$: ";
+    status << m_yoshi->get_coins();
+
+    if (m_yoshi->has_vortex())
+    {
+        status << " VOR ";
+    }
+    else
+    {
+        status << " ";
+    }
+    setGameStatText(status.str());
+
+    if (timeRemaining() == 0)
+    {
+        playSound(SOUND_GAME_FINISHED);
+
+        int peachStars = m_peach->get_stars();
+        int yoshiStars = m_yoshi->get_stars();
+
+        int peachCoins = m_peach->get_coins();
+        int yoshiCoins = m_yoshi->get_coins();
+        if (peachStars > yoshiStars)
+        {
+            setFinalScore(peachStars, peachCoins);
+            return GWSTATUS_PEACH_WON;
+        }
+        else if (peachStars < yoshiStars)
+        {
+            setFinalScore(yoshiStars, yoshiCoins);
+            return GWSTATUS_YOSHI_WON;
+        }
+        else if (peachStars == yoshiStars)
+        {
+            if (peachCoins > yoshiCoins)
+            {
+                setFinalScore(peachStars, peachCoins);
+                return GWSTATUS_PEACH_WON;
+            }
+            else if (peachCoins < yoshiCoins)
+            {
+                setFinalScore(yoshiStars, yoshiCoins);
+                return GWSTATUS_YOSHI_WON;
+            }
+            else
+            {
+                int winner = randInt(1, 2);
+                if (winner == 1)
+                {
+                    setFinalScore(peachStars, peachCoins);
+                    return GWSTATUS_PEACH_WON;
+                }
+                else
+                {
+                    setFinalScore(yoshiStars, yoshiCoins);
+                    return GWSTATUS_YOSHI_WON;
+                }
+                
+            }
+        }
+    }
     return GWSTATUS_CONTINUE_GAME;
 }
 

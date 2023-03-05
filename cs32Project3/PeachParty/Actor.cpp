@@ -35,6 +35,7 @@ Player::Player(StudentWorld* myWorld, int imageID, int startX, int startY, int p
 	 m_coins = 0;
 	 m_stars = 0;
 	 m_vortex = false;
+	 m_roll = 0;
 }
 
 void Player::doSomething()
@@ -49,6 +50,7 @@ void Player::doSomething()
 			//std::cout << die_roll << std::endl;
 			m_ticksToMove = die_roll * 8;
 			m_waitingRoll = false;
+			m_waitAction = true;
 		}
 		else
 		{
@@ -133,18 +135,55 @@ void Player::doSomething()
 
 }
 
-//CoinSquare Implementation
-CoinSquare::CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int depth)
-	:Actor(myWorld, imageID, startX, startY,  dir, depth)
-{
-	m_giveCoin = true;
-}
-
+//COINSQUARE IMPLEMENTATION
 void CoinSquare::doSomething()
 {
-	if (!isAlive())
+	if (isAlive())
+	{
+		if (getWorld()->getPeach()->getX() == getX() && getWorld()->getPeach()->getY() == getY() && getWorld()->getPeach()->is_waitingRoll() && getWorld()->getPeach()->is_waitAction())
+		{
+			if (m_coinAdjust >= 0)
+			{
+				getWorld()->getPeach()->adjust_coins(m_coinAdjust);
+				getWorld()->playSound(SOUND_GIVE_COIN);
+				getWorld()->getPeach()->adjust_action(false);
+			}
+			else
+			{
+				int negPeachCoins = getWorld()->getPeach()->get_coins() - 3;
+				if (negPeachCoins < 0)
+				{
+					getWorld()->getPeach()->adjust_coins(getWorld()->getPeach()->get_coins() - getWorld()->getPeach()->get_coins());
+					getWorld()->playSound(SOUND_TAKE_COIN);
+					getWorld()->getPeach()->adjust_action(false);
+				}
+			}
+		}
+
+		if (getWorld()->getYoshi()->getX() == getX() && getWorld()->getYoshi()->getY() == getY() && getWorld()->getYoshi()->is_waitingRoll() && getWorld()->getYoshi()->is_waitAction())
+		{
+			if (m_coinAdjust >= 0)
+			{
+				getWorld()->getPeach()->adjust_coins(m_coinAdjust);
+				getWorld()->playSound(SOUND_GIVE_COIN);
+				getWorld()->getPeach()->adjust_action(false);
+			}
+			else
+			{
+				int negPeachCoins = getWorld()->getYoshi()->get_coins() - 3;
+				if (negPeachCoins < 0)
+				{
+					getWorld()->getYoshi()->adjust_coins(getWorld()->getPeach()->get_coins() - getWorld()->getPeach()->get_coins());
+					getWorld()->playSound(SOUND_TAKE_COIN);
+					getWorld()->getYoshi()->adjust_action(false);
+				}
+			}
+		}
+
+		return;
+	}
+	else
 	{
 		return;
 	}
-	return;
 }
