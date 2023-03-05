@@ -205,5 +205,5 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
 
 bool isFork(int x, int y, int dir)
 {
-
+    return false;
 }

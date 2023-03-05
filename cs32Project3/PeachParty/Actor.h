@@ -15,6 +15,9 @@ public:
 
 	bool isAlive();
 
+	virtual bool is_a_square() const = 0; 
+	virtual bool can_be_hit_by_vortex() const = 0;
+	
 	StudentWorld* getWorld();
 
 	virtual void doSomething() = 0;
@@ -37,6 +40,10 @@ public:
 	int get_coins() const { return m_coins; }
 	bool has_vortex() const { return m_vortex; }
 
+	bool is_a_square() { return false; }
+	bool can_be_hit_by_vortex() { return false; }
+	void hit_by_vortex() { return; }
+
 private:
 
 	int  m_playerNum;
@@ -51,22 +58,131 @@ private:
 };
 
 
-
-
-
-
-class CoinSquare : public Actor // or some subclass of Actor //SQUARES BASICALLY AFFECT THE PLAYER function
-{
+class ActivatingObject : public Actor {
 public:
-	CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int dir = right, int depth = 1);
+	ActivatingObject(StudentWorld* myWorld, int imageID, int startX, int startY, int dir = right, int depth = 0)
+		: Actor(myWorld, imageID, startX, startY, dir, depth) {};
 
-	virtual void doSomething();
 
-private:
-	bool m_giveCoin;
+  void doSomething() { return; }
+};
 
+class ActivateOnPlayer : public ActivatingObject {
+public:
+	ActivateOnPlayer(StudentWorld* myWorld, int imageID, int startX, int startY, int dir = right, int depth = 1, bool activate_when_go_lands = true)
+		:ActivatingObject(myWorld, imageID, startX, startY, dir, depth) {};
+};
+
+class Vortex : public ActivatingObject {
+public:
+  Vortex(StudentWorld* myWorld, int imageID, int startX, int startY, int dir)
+	  :ActivatingObject(myWorld, imageID, startX, startY, dir) {};
+
+  bool is_a_square() { return false; }
+  bool can_be_hit_by_vortex() { return false; }
+
+  std::vector<Actor*> do_i_activate();
+
+  void doSomething() { return; }
+};
+
+class StarSquare : public ActivateOnPlayer { //CHECK DEPTH
+public:
+	StarSquare(StudentWorld* myWorld, int imageID, int startX, int startY)
+		:ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+
+	bool is_a_square() { return true; }
+	bool can_be_hit_by_vortex() { return false; }
+
+
+	void doSomething() { return; }
+};
+
+class CoinSquare : public ActivateOnPlayer {
+public:
+  CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int adjust_coins_by = 3)
+	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+  bool is_a_square() { return true; }
+  bool can_be_hit_by_vortex() { return false; }
+
+  void doSomething() { return; }
+};
+
+class DirectionalSquare : public ActivateOnPlayer {
+public:
+  DirectionalSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int angle)
+	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+
+  bool is_a_square() { return true; }
+  bool can_be_hit_by_vortex() { return false; }
+
+  void doSomething() { return; }
+};
+
+class BankSquare : public ActivateOnPlayer {
+public:
+  BankSquare(StudentWorld* myWorld, int imageID, int startX, int startY)
+	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+
+  bool is_a_square() { return true; }
+  bool can_be_hit_by_vortex() { return false; }
+
+  void doSomething() { return; }
+};
+
+class EventSquare : public ActivateOnPlayer {
+public:
+  EventSquare(StudentWorld* myWorld, int imageID, int startX, int startY)
+	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+  bool is_a_square() { return true; }
+  bool can_be_hit_by_vortex() { return false; }
+
+  void doSomething() { return; }
+};
+
+class Enemy : public ActivateOnPlayer {
+public:
+  Enemy(StudentWorld* myWorld, int imageID, int startX, int startY, int num_sq_to_move=0, int number_of_ticks_to_pause=0, bool activate_when_go_lands=true, int dir = right
+	  ,int depth = 0):ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+  void doSomething() { return; }
+
+  bool is_a_square() { return false; }
+  bool can_be_hit_by_vortex() { return true; }
+
+  void hit_by_vortex();  // called when enemy is hit by a vortex projectile (called by vortex projectile)
+};
+
+class DroppingSquare : public ActivateOnPlayer {
+public:
+  DroppingSquare(StudentWorld* myWorld, int imageID, int startX, int startY)
+	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {};
+
+  bool is_a_square() const;
+  bool can_be_hit_by_vortex() const;
+
+  void doSomething();
+};
+
+class Bowser : public Enemy {
+public:
+	Bowser(StudentWorld* myWorld, int imageID, int startX, int startY)
+		:Enemy(myWorld, imageID, startX, startY) {};
+
+
+  void doSomething();
+};
+
+class Boo : public Enemy {
+public:
+  Boo(StudentWorld* myWorld, int imageID, int startX, int startY)
+	  :Enemy(myWorld, imageID, startX, startY) {};
 };
 
 
 
-#endif // ACTOR_H_
