@@ -17,7 +17,7 @@ public:
 
 	virtual bool is_a_square() const = 0; 
 	virtual bool can_be_hit_by_vortex() const = 0;
-	
+	virtual bool alter_Dir() { return false; }
 	StudentWorld* getWorld();
 
 	virtual void doSomething() = 0;
@@ -36,7 +36,7 @@ public:
 	virtual void doSomething();
 	bool is_waitingRoll() const { return m_waitingRoll; }
 	bool is_waitAction() const { return m_waitAction; }
-
+	
 
 	int get_dice() const { return m_roll; }    // used to display stats on status line
 	int get_stars() const { return m_stars; }   // used to display stats on status line
@@ -46,11 +46,14 @@ public:
 	bool is_a_square() const { return false; }
 	bool can_be_hit_by_vortex() const { return false; }
 	void hit_by_vortex() { return; };
+	bool validDir(int x, int y, int dir);
 
-
+	void randomDir();
 	void adjust_stars(const int this_much) { m_stars += this_much; return; }
 	void adjust_coins(const int this_much) { m_coins += this_much; return; }
 	void adjust_action(bool action) { m_waitAction = action; }
+	void adjust_walkDir(int dir) { m_walkDir = dir; }
+	void adjust_vortex(bool ammo) { m_vortex = ammo; }
 
 
 private:
@@ -111,11 +114,12 @@ public:
 
 class CoinSquare : public ActivateOnPlayer {
 public:
-  CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int adjust_coins_by = 3)
+  CoinSquare(StudentWorld* myWorld, int imageID, int startX, int startY, int adjust_coins_by)
 	  :ActivateOnPlayer(myWorld, imageID, startX, startY) {
 	  m_coinAdjust = adjust_coins_by;
   }
-
+  
+  bool alter_Dir() { return true; }
   bool is_a_square() const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
 
@@ -137,6 +141,8 @@ public:
 
   bool is_a_square()const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
+  int get_angle() { return m_angle; }
+
 
   void doSomething() { return; };
 

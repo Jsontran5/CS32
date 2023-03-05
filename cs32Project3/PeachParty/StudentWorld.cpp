@@ -45,24 +45,24 @@ int StudentWorld::init() //work on this first
                     break;
                 case Board::boo: //add i nthe baddies
                     actors.push_back(new Boo(this, IID_BOO, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
-                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
                     break;
                 case Board::bowser:
                     actors.push_back(new Bowser(this, IID_BOWSER, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
-                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
                     break;
                 case Board::player:
 
                     m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 1); 
                     m_yoshi = new Player(this, IID_YOSHI, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 2);
 
-                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
                     break;
                 case Board::red_coin_square:
                     actors.push_back(new CoinSquare(this, IID_RED_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, -3));
                     break;
                 case Board::blue_coin_square:
-                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
                     break;
                 case Board::up_dir_square:
                     actors.push_back(new DirectionalSquare(this, IID_DIR_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 90, 90)); //SPRITE OF DIRECTIONAL SQUARE CURRENTLY WRONG
@@ -108,7 +108,21 @@ int StudentWorld::move()
   
     for (int i = 0; i < actors.size(); i++)
     {
-        actors[i]->doSomething();
+        if (actors[i]->isAlive())
+        {
+            actors[i]->doSomething();
+        }
+  
+    }
+
+    for (int i = 0; i < actors.size(); i++)
+    {
+        if (!actors[i]->isAlive())
+        {
+            delete actors[i];
+            actors.erase(actors.begin() + i);
+        }
+
     }
 
     stringstream status;
@@ -134,7 +148,7 @@ int StudentWorld::move()
     status << " | Bank: ";
     status << m_bank;
 
-    status << " |P2 ROLL: ";
+    status << " | P2 Roll: ";
     status << m_yoshi->get_dice();
     status << " Stars: ";
     status << m_yoshi->get_stars();
@@ -204,7 +218,7 @@ int StudentWorld::move()
 
 void StudentWorld::cleanUp()
 {
-    delete m_peach; //add for yoshi later
+    delete m_peach; 
     m_peach = nullptr;
     delete m_yoshi;
     m_yoshi = nullptr;
@@ -215,6 +229,30 @@ void StudentWorld::cleanUp()
     }
     actors.clear();
 }
+
+void StudentWorld::spawnVortex(int x, int y, int dir)
+{
+    actors.push_back(new Vortex(this, IID_VORTEX, x, y, dir));
+}
+
+bool StudentWorld::is_there_a_square_at_location(int dest_x, int dest_y) const
+{
+    for (int i = 0; i < actors.size(); i++)
+    {
+        if (actors[i]->getX() == dest_x && actors[i]->getY() == dest_y && actors[i]->is_a_square())
+        {
+            return true;
+        }
+            
+    }
+
+    return false;
+}
+
+
+
+
+
 bool StudentWorld::isValidPos(int x, int y, int dir)
 {
     Board bd;
@@ -297,7 +335,3 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
     return false;
 }
 
-bool isFork(int x, int y, int dir)
-{
-    return false;
-}

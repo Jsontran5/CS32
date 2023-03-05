@@ -19,10 +19,17 @@ public:
   virtual void cleanUp();
 
   bool isValidPos(int x, int y, int dir);
-  bool isFork(int x, int y, int dir);
+  
+  void spawnVortex(int x, int y, int dir);
 
   Player* getPeach() const { return m_peach; }
   Player* getYoshi() const { return m_yoshi; }
+
+
+  // Determine if there is a square at the specified location. Used to determine if a gameobject
+  // like a player, enemy or vortex can move onto the specified location
+  bool is_there_a_square_at_location(int dest_x, int dest_y) const;
+
 
 private:
 	std::vector<Actor*> actors;

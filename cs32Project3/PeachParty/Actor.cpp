@@ -32,6 +32,7 @@ Player::Player(StudentWorld* myWorld, int imageID, int startX, int startY, int p
 	m_walkDir = right;
 	 m_ticksToMove = 0;
 	 m_waitingRoll= true;
+	 m_waitAction = false;
 	 m_coins = 0;
 	 m_stars = 0;
 	 m_vortex = false;
@@ -42,6 +43,10 @@ void Player::doSomething()
 {
 	if (m_waitingRoll)
 	{
+		if (!validDir(getX(), getY(), m_walkDir))
+		{
+			randomDir();
+		}
 		int action = getWorld()->getAction(m_playerNum);
 		if (action == ACTION_ROLL)
 		{
@@ -52,9 +57,21 @@ void Player::doSomething()
 			m_waitingRoll = false;
 			m_waitAction = true;
 		}
-		else
+		else if (action == ACTION_FIRE)
 		{
-			return;
+			if (m_vortex)
+			{
+				int vX;
+				int vY;
+				getPositionInThisDirection(m_walkDir, SPRITE_WIDTH, vX, vY);
+
+				getWorld()->spawnVortex(vX, vY, m_walkDir);
+
+				getWorld()->playSound(SOUND_PLAYER_FIRE);
+
+				adjust_vortex(false);
+			}
+			
 		}
 	}
 	else
@@ -135,6 +152,57 @@ void Player::doSomething()
 
 }
 
+void Player::randomDir()
+{
+	int randomDir = randInt(0, 3) * 90;
+
+	while (!validDir(getX(), getY(), m_walkDir))
+	{
+		randomDir = randInt(0, 3) * 90;
+	}
+
+	if (randomDir == left)
+	{
+		setDirection(left);
+	}
+	else
+	{
+		setDirection(right);
+	}
+
+	adjust_walkDir(randomDir);
+}
+
+bool Player::validDir(int x, int y, int dir)
+{
+	getPositionInThisDirection(dir, SPRITE_WIDTH, x, y);
+	if (dir == 180 || dir == 270)
+	{
+		while (x % 16 != 0)
+		{
+			x++;
+		}
+		while (y % 16 != 0)
+		{
+			y++;
+		}
+	}
+	else
+	{
+		while (x % 16 != 0)
+		{
+			x++;
+		}
+		while (y % 16 != 0)
+		{
+			y++;
+		}
+	}
+
+	return getWorld()->is_there_a_square_at_location(x, y);
+}
+
+
 //COINSQUARE IMPLEMENTATION
 void CoinSquare::doSomething()
 {
@@ -157,6 +225,12 @@ void CoinSquare::doSomething()
 					getWorld()->playSound(SOUND_TAKE_COIN);
 					getWorld()->getPeach()->adjust_action(false);
 				}
+				else
+				{
+					getWorld()->getPeach()->adjust_coins(m_coinAdjust);
+					getWorld()->playSound(SOUND_TAKE_COIN);
+					getWorld()->getPeach()->adjust_action(false);
+				}
 			}
 		}
 
@@ -164,9 +238,9 @@ void CoinSquare::doSomething()
 		{
 			if (m_coinAdjust >= 0)
 			{
-				getWorld()->getPeach()->adjust_coins(m_coinAdjust);
+				getWorld()->getYoshi()->adjust_coins(m_coinAdjust);
 				getWorld()->playSound(SOUND_GIVE_COIN);
-				getWorld()->getPeach()->adjust_action(false);
+				getWorld()->getYoshi()->adjust_action(false);
 			}
 			else
 			{
@@ -174,6 +248,12 @@ void CoinSquare::doSomething()
 				if (negPeachCoins < 0)
 				{
 					getWorld()->getYoshi()->adjust_coins(getWorld()->getPeach()->get_coins() - getWorld()->getPeach()->get_coins());
+					getWorld()->playSound(SOUND_TAKE_COIN);
+					getWorld()->getYoshi()->adjust_action(false);
+				}
+				else
+				{
+					getWorld()->getYoshi()->adjust_coins(m_coinAdjust);
 					getWorld()->playSound(SOUND_TAKE_COIN);
 					getWorld()->getYoshi()->adjust_action(false);
 				}
