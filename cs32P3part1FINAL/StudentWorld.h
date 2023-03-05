@@ -19,17 +19,10 @@ public:
   virtual void cleanUp();
 
   bool isValidPos(int x, int y, int dir);
-  bool isFork(int x, int y, int dir);
-
-  Player* getPeach() const { return m_peach; }
-  Player* getYoshi() const { return m_yoshi; }
 
 private:
 	std::vector<Actor*> actors;
 	Player* m_peach;
-	Player* m_yoshi;
-
-	
 
 };
 

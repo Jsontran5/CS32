@@ -28,26 +28,16 @@ private:
 class Player : public Actor
 {
 public:
-	Player(StudentWorld* myWorld, int imageID, int startX, int startY, int playerNumber, int dir = right, int depth = 0);
+	Player(StudentWorld* myWorld, int imageID, int startX, int startY, int dir = right, int depth = 0);
 
 	virtual void doSomething();
-	bool is_waitingRoll() const { return m_waitingRoll; }
-	int get_dice() const { return m_roll; }    // used to display stats on status line
-	int get_stars() const { return m_stars; }   // used to display stats on status line
-	int get_coins() const { return m_coins; }
-	bool has_vortex() const { return m_vortex; }
 
 private:
 
-	int  m_playerNum;
 	int m_walkDir;
 	int m_ticksToMove;
 	bool m_waitingRoll;
-	int m_coins;
-	int m_stars;
-	int m_roll;
-	bool m_vortex;
-	
+	// CHECK IF PLAYER 1 or 2
 };
 
 

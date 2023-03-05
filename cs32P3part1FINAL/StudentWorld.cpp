@@ -26,7 +26,6 @@ int StudentWorld::init() //work on this first
 
     string board_file = assetPath() + filename.str();
     Board::LoadResult result = bd.loadBoard(board_file);
-   
     if (result == Board::load_fail_file_not_found)
         cerr << "Could not find board01.txt data file\n";
     else if (result == Board::load_fail_bad_format)
@@ -42,7 +41,7 @@ int StudentWorld::init() //work on this first
                 switch (ge) {
                 case Board::empty:
                     break;
-                case Board::boo: //add i nthe baddies
+                case Board::boo:
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::bowser:
@@ -50,8 +49,7 @@ int StudentWorld::init() //work on this first
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::player:
-                    m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 1); 
-                    m_yoshi = new Player(this, IID_YOSHI, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 2);
+                    m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT); //added in PEACH
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     break;
                 case Board::red_coin_square:
@@ -93,13 +91,8 @@ int StudentWorld::init() //work on this first
 
 int StudentWorld::move()
 {
-  
-        m_peach->doSomething();
-    
-        
-        m_yoshi->doSomething();
-    
-  
+    m_peach->doSomething(); //add for yoshi later
+
     for (int i = 0; i < actors.size(); i++)
     {
         actors[i]->doSomething();
@@ -112,8 +105,6 @@ void StudentWorld::cleanUp()
 {
     delete m_peach; //add for yoshi later
     m_peach = nullptr;
-    delete m_yoshi;
-    m_yoshi = nullptr;
 
     for (int i = 0; i < actors.size(); i++)
     {
@@ -151,16 +142,16 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
 
    
 
-    if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
+    /*if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
     {
         if (bd.getContentsOf(x, y) != Board::empty)
             return true;
-    }
+    }*/
 
-    return false;
+    //return false;
     //cout << "test1 " << x << " and1 " << y << endl;
 
-    /*for (int i = 0; i < actors.size(); i++)
+    for (int i = 0; i < actors.size(); i++)
     {
         int squareX, squareY;
         squareX= actors[i]->getX() ;
@@ -199,11 +190,6 @@ bool StudentWorld::isValidPos(int x, int y, int dir)
             return false;
         }
 
-    }*/
+    }
     return false;
-}
-
-bool isFork(int x, int y, int dir)
-{
-
 }

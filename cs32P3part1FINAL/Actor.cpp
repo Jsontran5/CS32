@@ -25,27 +25,22 @@ StudentWorld* Actor::getWorld()
 
 
 //player implementation
-Player::Player(StudentWorld* myWorld, int imageID, int startX, int startY, int playerNumber, int dir, int depth)
+Player::Player(StudentWorld* myWorld, int imageID, int startX, int startY, int dir, int depth)
 	:Actor(myWorld, imageID, startX, startY,  dir, depth)
 {
-	m_playerNum = playerNumber;
 	m_walkDir = right;
 	 m_ticksToMove = 0;
 	 m_waitingRoll= true;
-	 m_coins = 0;
-	 m_stars = 0;
-	 m_vortex = false;
 }
 
 void Player::doSomething()
 {
 	if (m_waitingRoll)
 	{
-		int action = getWorld()->getAction(m_playerNum);
+		int action = getWorld()->getAction(1); //hard coded for peach
 		if (action == ACTION_ROLL)
 		{
 			int die_roll = randInt(1, 10);
-			m_roll = die_roll;
 			//std::cout << die_roll << std::endl;
 			m_ticksToMove = die_roll * 8;
 			m_waitingRoll = false;
