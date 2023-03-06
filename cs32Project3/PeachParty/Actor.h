@@ -19,7 +19,8 @@ public:
 	virtual bool can_be_hit_by_vortex() const = 0;
 	virtual bool alter_Dir() { return false; }
 	StudentWorld* getWorld();
-
+	virtual void teleport_me_to_random_sq();
+	void adjust_alive(bool state) { m_isAlive = state; }
 	virtual void doSomething() = 0;
 
 
@@ -54,7 +55,6 @@ public:
 	bool on_fork();
 	void force_walk_direction(int angle);
 
-
 	void randomDir();
 	void teleport_me_to_random_sq();
 	void adjust_stars(const int this_much) { m_stars += this_much; return; }
@@ -68,6 +68,9 @@ public:
 	void adjust_rolls(int roll) { m_roll = roll; }
 	void adjust_waitingRoll(bool state) { m_waitingRoll = state; }
 	void adjust_teleState(bool tele) { m_teleported = tele; }
+
+	void reset_coins() { m_coins = 0; }
+	void reset_stars() { m_stars = 0; }
 
 
 private:
@@ -105,14 +108,19 @@ public:
 class Vortex : public ActivatingObject {
 public:
   Vortex(StudentWorld* myWorld, int imageID, int startX, int startY, int dir)
-	  :ActivatingObject(myWorld, imageID, startX, startY, dir) {};
+	  :ActivatingObject(myWorld, imageID, startX, startY, dir) {
+	  m_dir = dir;
+  }
 
   bool is_a_square() const { return false; }
   bool can_be_hit_by_vortex() const { return false; }
 
   std::vector<Actor*> do_i_activate();
 
-  void doSomething() { return; }
+  void doSomething();
+
+private:
+	int m_dir;
 };
 
 class StarSquare : public ActivateOnPlayer { //CHECK DEPTH
@@ -193,14 +201,42 @@ public:
 class Enemy : public ActivateOnPlayer {
 public:
   Enemy(StudentWorld* myWorld, int imageID, int startX, int startY, int num_sq_to_move=0, int number_of_ticks_to_pause=0, bool activate_when_go_lands=true, int dir = right
-	  ,int depth = 0):ActivateOnPlayer(myWorld, imageID, startX, startY, dir, depth) {};
+	  , int depth = 0) :ActivateOnPlayer(myWorld, imageID, startX, startY, dir, depth) {
+	  m_pauseCounter = 180;
+	  m_walking = false;
+  }
 
   void doSomething();
 
   bool is_a_square() const { return false; }
   bool can_be_hit_by_vortex()const { return true; }
 
+  bool isWalking() const { return m_walking; }
+  int get_pauseCount() const {
+	  return m_pauseCounter;
+  }
+
+  void adjust_pauseCounter(int count) { m_pauseCounter += count; }
+  void adjust_walkDir(int dir) { m_walkDir = dir; }
+  void adjust_ticks(int tick) { m_ticksToMove = tick; }
+
+
+  bool validDir(int x, int y, int dir);
+  void randomDir();
+  void teleport_me_to_random_sq();
+  bool on_fork();
+
   void hit_by_vortex();  // called when enemy is hit by a vortex projectile (called by vortex projectile)
+
+private:
+	virtual void special(int pNum) = 0;
+	virtual void drop() = 0;
+	bool m_walking;
+	int m_walkDir;
+	int m_pauseCounter;
+	int m_ticksToMove;
+
+
 };
 
 class DroppingSquare : public ActivateOnPlayer {
@@ -220,7 +256,9 @@ public:
 	Bowser(StudentWorld* myWorld, int imageID, int startX, int startY)
 		:Enemy(myWorld, imageID, startX, startY) {};
 
-
+private:
+	virtual void special(int pNum);
+	void drop();
 	
 };
 
@@ -228,6 +266,9 @@ class Boo : public Enemy {
 public:
   Boo(StudentWorld* myWorld, int imageID, int startX, int startY)
 	  :Enemy(myWorld, imageID, startX, startY) {};
+private:
+	virtual void special(int pNum);
+	void drop() { return; }
 };
 
 #endif

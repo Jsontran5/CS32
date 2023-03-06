@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include "Actor.h"
+#include <cstdlib>
 using namespace std;
 
 GameWorld* createStudentWorld(string assetPath)
@@ -270,4 +271,25 @@ Player* StudentWorld::get_other_player(int pNum) const
         return m_yoshi;
     }
         return m_peach;
+}
+
+void StudentWorld::spawnDrop(int x, int y)
+{
+    actors.push_back(new DroppingSquare(this, IID_VORTEX, x, y));
+}
+
+
+Actor* StudentWorld::hit_by_vortex(int x, int y)
+{
+    for (int i = 0; i < actors.size(); i++)
+    {
+        if (actors[i]->can_be_hit_by_vortex())
+        {
+            if (abs(x - actors[i]->getX()) < SPRITE_WIDTH && abs(y - actors[i]->getY()) < SPRITE_HEIGHT)
+            {
+                return actors[i];
+            }
+        }
+    }
+    return nullptr;
 }

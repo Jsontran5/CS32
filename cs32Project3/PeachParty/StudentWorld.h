@@ -20,6 +20,7 @@ public:
 
   
   void spawnVortex(int x, int y, int dir);
+  void spawnDrop(int x, int y);
 
   Player* getPeach() const { return m_peach; }
   Player* getYoshi() const { return m_yoshi; }
@@ -45,6 +46,7 @@ public:
   // actions.
   Player* get_other_player(int pNum) const;
 
+  Actor* hit_by_vortex(int x, int y);
 
 private:
 	std::vector<Actor*> actors;

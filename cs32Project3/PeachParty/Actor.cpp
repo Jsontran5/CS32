@@ -214,7 +214,7 @@ bool Player::on_fork()
 	{
 		int opposite_dir = (m_walkDir + 180) % 360;
 
-		if (/*i * 90 != opposite_dir && */validDir(getX(), getY(), i * 90))
+		if (i * 90 != opposite_dir && validDir(getX(), getY(), i * 90))
 		{
 			if (i * 90 != m_walkDir)
 			{
@@ -715,5 +715,304 @@ void DroppingSquare::doSomething()
 //Common enemy Implementation
 void Enemy::doSomething()
 {
+	if (!m_walking)
+	{
+		if (getWorld()->getPeach()->getX() == getX() && getWorld()->getPeach()->getY() == getY() && getWorld()->getPeach()->is_waitingRoll() && getWorld()->getPeach()->is_waitAction())
+		{
+			special(1);
+		}
 
+		if (getWorld()->getYoshi()->getX() == getX() && getWorld()->getYoshi()->getY() == getY() && getWorld()->getYoshi()->is_waitingRoll() && getWorld()->getYoshi()->is_waitAction())
+		{
+			special(2);
+		}
+
+
+		adjust_pauseCounter(-1);
+
+		if (m_pauseCounter <= 0)
+		{
+			int squares_to_move = randInt(1, 10);
+			adjust_ticks(squares_to_move * 8);
+
+			randomDir();
+
+			m_walking = true;
+		}
+	}
+	else
+	{
+		if (on_fork())
+		{
+			randomDir();
+		}
+		else if (!validDir(getX(), getY(), m_walkDir))
+		{
+
+			if (m_walkDir == right || m_walkDir == left)
+			{
+
+				if (validDir(getX(), getY(), up))
+				{
+					m_walkDir = up;
+					setDirection(right);
+
+				}
+				else
+				{
+					m_walkDir = down;
+					setDirection(right);
+				}
+			}
+			else if (m_walkDir == up || m_walkDir == down)
+			{
+
+
+				if (validDir(getX(), getY(), right))
+				{
+					m_walkDir = right;
+					setDirection(right);
+
+				}
+				else
+				{
+					m_walkDir = left;
+					setDirection(left);
+
+				}
+			}
+		}
+
+		moveAtAngle(m_walkDir, 2);
+		m_ticksToMove--;
+
+		if (m_ticksToMove <= 0)
+		{
+			m_walking = false;
+			adjust_pauseCounter(180);
+			drop();
+		}
+
+
+	}
+
+}
+
+
+bool Enemy::on_fork()
+{
+	int validDirections = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		int opposite_dir = (m_walkDir + 180) % 360;
+
+		if (i * 90 != opposite_dir && validDir(getX(), getY(), i * 90))
+		{
+			
+			
+				validDirections++;
+			
+
+		}
+
+	}
+
+	if (getWorld()->is_there_a_square_at_location(getX(), getY()) && validDirections > 1 && (m_ticksToMove % 8 == 0))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Enemy::randomDir()
+{
+	int randomDir = randInt(0, 3) * 90;
+
+	while (!validDir(getX(), getY(), m_walkDir))
+	{
+		randomDir = randInt(0, 3) * 90;
+	}
+
+	adjust_walkDir(randomDir);
+	if (randomDir == left)
+	{
+		setDirection(left);
+	}
+	else
+	{
+		setDirection(right);
+	}
+
+
+}
+
+bool Enemy::validDir(int x, int y, int dir)
+{
+	int newX;
+	int newY;
+	getPositionInThisDirection(dir, SPRITE_WIDTH, newX, newY);
+	if (dir == 180 || dir == 270)
+	{
+		while (newX % 16 != 0)
+		{
+			newX++;
+		}
+		while (newY % 16 != 0)
+		{
+			newY++;
+		}
+	}
+	else
+	{
+		while (newX % 16 != 0)
+		{
+			newX--;
+		}
+		while (newY % 16 != 0)
+		{
+			newY--;
+		}
+	}
+
+
+	return getWorld()->is_there_a_square_at_location(newX, newY);
+}
+
+void Enemy::teleport_me_to_random_sq()
+{
+	int newX = randInt(0, 15) * SPRITE_WIDTH;
+	int newY = randInt(0, 15) * SPRITE_WIDTH;
+
+
+	while (!getWorld()->is_there_a_square_at_location(newX, newY))
+	{
+		newX = randInt(0, 15) * SPRITE_WIDTH;
+		newY = randInt(0, 15) * SPRITE_WIDTH;
+	}
+
+	moveTo(newX, newY);
+}
+
+//Bowser
+
+void Bowser::special(int pNum)
+{
+	int half = randInt(1, 2);
+	if (pNum == 1)
+	{
+		if (half == 1)
+		{
+			getWorld()->getPeach()->adjust_coins(-1 * getWorld()->getPeach()->get_coins());
+			getWorld()->playSound(SOUND_BOWSER_ACTIVATE);
+		}
+	}
+	else
+	{
+		if (half == 1)
+		{
+			getWorld()->getYoshi()->adjust_coins(-1 * getWorld()->getYoshi()->get_coins());
+			getWorld()->playSound(SOUND_BOWSER_ACTIVATE);
+		}
+	}
+
+}
+
+void Bowser::drop()
+{
+	int quarter = randInt(1, 4);
+
+	if (quarter == 1)
+	{
+		getWorld()->get_square_at_location(getX(), getY())->adjust_alive(false);
+		getWorld()->spawnDrop(getX(), getY());
+		getWorld()->playSound(SOUND_DROPPING_SQUARE_CREATED);
+	}
+}
+
+//BOO implementation
+
+void Boo::special(int pNum)
+{
+	Player* player;
+	Player* other;
+	if (pNum == 1)
+	{
+		player = getWorld()->getPeach();
+		other = getWorld()->getYoshi();
+	}
+	else
+	{
+		player = getWorld()->getYoshi();
+		other = getWorld()->getPeach();
+	}
+
+
+	int choice = randInt(1, 2);
+	if (choice == 1)
+	{
+		int other_coins = other->get_coins();
+		int player_coins = player->get_coins();
+
+		other->reset_coins();
+		player->reset_coins();
+
+		player->adjust_coins(other_coins);
+		other->adjust_coins(player_coins);
+
+	}
+	else if (choice == 2)
+	{
+		int other_stars = other->get_stars();
+		int player_stars = player->get_stars();
+
+		other->reset_stars();
+		player->reset_stars();
+
+		player->adjust_stars(other_stars);
+		other->adjust_stars(player_stars);
+	}
+
+	getWorld()->playSound(SOUND_BOO_ACTIVATE);
+}
+
+
+//VORTEX
+void Vortex::doSomething()
+{
+	if (!isAlive())
+	{
+		return;
+	}
+	moveAtAngle(m_dir, 2);
+
+	if (getX() < 0 || getX() >= VIEW_WIDTH || getY() < 0; getY() >= VIEW_WIDTH)
+	{
+		adjust_alive(false);
+	}
+
+	Actor* target = getWorld()->hit_by_vortex(getX(), getY());
+	if (target != nullptr)
+	{
+		target->teleport_me_to_random_sq();
+		adjust_alive(false);
+		getWorld()->playSound(SOUND_HIT_BY_VORTEX);
+	}
+}
+
+
+
+void Actor::teleport_me_to_random_sq()
+{
+	int newX = randInt(0, 15) * SPRITE_WIDTH;
+	int newY = randInt(0, 15) * SPRITE_WIDTH;
+
+
+	while (!getWorld()->is_there_a_square_at_location(newX, newY))
+	{
+		newX = randInt(0, 15) * SPRITE_WIDTH;
+		newY = randInt(0, 15) * SPRITE_WIDTH;
+	}
+
+	moveTo(newX, newY);
 }
