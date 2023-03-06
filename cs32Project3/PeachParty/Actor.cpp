@@ -214,7 +214,7 @@ bool Player::on_fork()
 	{
 		int opposite_dir = (m_walkDir + 180) % 360;
 
-		if (i * 90 != opposite_dir && validDir(getX(), getY(), i * 90))
+		if (/*i * 90 != opposite_dir && */validDir(getX(), getY(), i * 90))
 		{
 			if (i * 90 != m_walkDir)
 			{
@@ -224,8 +224,8 @@ bool Player::on_fork()
 		}
 			
 	}
-	//
-	if (getWorld()->is_there_a_square_at_location(getX(), getY()) && validDirections >= 1) //&& (m_ticksToMove % 8 == 0))
+	
+	if (getWorld()->is_there_a_square_at_location(getX(), getY()) && validDirections >= 1 && (m_ticksToMove % 8 == 0))
 	{
 		return true;
 	}
@@ -647,5 +647,73 @@ void DirectionalSquare::doSomething()
 	{
 		getWorld()->getYoshi()->force_walk_direction(m_angle);
 	}
+
+}
+
+//DroppingSquare
+void DroppingSquare::doSomething()
+{
+	int choice = randInt(1, 2);
+	if (getWorld()->getPeach()->getX() == getX() && getWorld()->getPeach()->getY() == getY()&& getWorld()->getPeach()->is_waitingRoll() && getWorld()->getPeach()->is_waitAction())
+	{
+		if (choice == 1)
+		{
+			if (getWorld()->getPeach()->get_coins() - 10 < 0)
+			{
+				
+				getWorld()->getPeach()->adjust_coins(-1 * getWorld()->getPeach()->get_coins());
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+
+			}
+			else
+			{
+				
+				getWorld()->getPeach()->adjust_coins(-10);
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+			}
+		}
+		else if (choice == 2)
+		{
+			if (getWorld()->getPeach()->get_stars() > 0)
+			{
+				getWorld()->getPeach()->adjust_stars(-1);
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+			}
+		}
+
+	}
+
+	if (getWorld()->getYoshi()->getX() == getX() && getWorld()->getYoshi()->getY() == getY()&& getWorld()->getYoshi()->is_waitingRoll() && getWorld()->getYoshi()->is_waitAction())
+	{
+		if (choice == 1)
+		{
+			if (getWorld()->getYoshi()->get_coins() - 10 < 0)
+			{
+
+				getWorld()->getYoshi()->adjust_coins(-1 * getWorld()->getYoshi()->get_coins());
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+
+			}
+			else
+			{
+
+				getWorld()->getYoshi()->adjust_coins(-10);
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+			}
+		}
+		else if (choice == 2)
+		{
+			if (getWorld()->getYoshi()->get_stars() > 0)
+			{
+				getWorld()->getYoshi()->adjust_stars(-1);
+				getWorld()->playSound(SOUND_DROPPING_SQUARE_ACTIVATE);
+			}
+		}
+	}
+}
+
+//Common enemy Implementation
+void Enemy::doSomething()
+{
 
 }

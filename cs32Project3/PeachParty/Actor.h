@@ -195,7 +195,7 @@ public:
   Enemy(StudentWorld* myWorld, int imageID, int startX, int startY, int num_sq_to_move=0, int number_of_ticks_to_pause=0, bool activate_when_go_lands=true, int dir = right
 	  ,int depth = 0):ActivateOnPlayer(myWorld, imageID, startX, startY, dir, depth) {};
 
-  void doSomething() { return; }
+  void doSomething();
 
   bool is_a_square() const { return false; }
   bool can_be_hit_by_vortex()const { return true; }
@@ -221,7 +221,7 @@ public:
 		:Enemy(myWorld, imageID, startX, startY) {};
 
 
-	void doSomething() { return; };
+	
 };
 
 class Boo : public Enemy {
