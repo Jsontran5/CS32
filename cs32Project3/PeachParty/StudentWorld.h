@@ -18,7 +18,6 @@ public:
   virtual int move();
   virtual void cleanUp();
 
-  bool isValidPos(int x, int y, int dir);
   
   void spawnVortex(int x, int y, int dir);
 
@@ -29,6 +28,22 @@ public:
   // Determine if there is a square at the specified location. Used to determine if a gameobject
   // like a player, enemy or vortex can move onto the specified location
   bool is_there_a_square_at_location(int dest_x, int dest_y) const;
+
+  // Get a pointer to the square at the specified location
+  Actor* get_square_at_location(int x, int y) const;
+
+  // get # of coins in the bank
+  int get_bank_coins() const {return m_bank;}
+
+  // add coins to the bank (when player passes over a bank square)
+  void deposit_bank_coins(int coins) { m_bank += coins; }
+
+  // reset # of coins in the bank to zero
+  void reset_bank_coins() {m_bank = 0;}
+
+  // Given a player object pointer, returns a pointer to the other player object. Used for swapping
+  // actions.
+  Player* get_other_player(int pNum) const;
 
 
 private:

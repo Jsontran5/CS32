@@ -43,6 +43,14 @@ int StudentWorld::init() //work on this first
                 switch (ge) {
                 case Board::empty:
                     break;
+                case Board::player:
+
+                    m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 1);
+                    m_yoshi = new Player(this, IID_YOSHI, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 2);
+                    
+
+                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 3));
+                    break;
                 case Board::boo: //add i nthe baddies
                     actors.push_back(new Boo(this, IID_BOO, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
@@ -51,13 +59,7 @@ int StudentWorld::init() //work on this first
                     actors.push_back(new Bowser(this, IID_BOWSER, i * SPRITE_WIDTH, j * SPRITE_HEIGHT));
                     actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
                     break;
-                case Board::player:
-
-                    m_peach = new Player(this, IID_PEACH, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 1); 
-                    m_yoshi = new Player(this, IID_YOSHI, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, 2);
-
-                    actors.push_back(new CoinSquare(this, IID_BLUE_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT,3));
-                    break;
+                
                 case Board::red_coin_square:
                     actors.push_back(new CoinSquare(this, IID_RED_COIN_SQUARE, i * SPRITE_WIDTH, j * SPRITE_HEIGHT, -3));
                     break;
@@ -99,16 +101,13 @@ int StudentWorld::init() //work on this first
 
 int StudentWorld::move()
 {
-  
-        m_peach->doSomething();
-    
-        
-        m_yoshi->doSomething();
+    m_peach->doSomething();
+    m_yoshi->doSomething();
     
   
     for (int i = 0; i < actors.size(); i++)
     {
-        if (actors[i]->isAlive())
+        if (actors[i]->isAlive() && !actors[i]->alter_Dir())
         {
             actors[i]->doSomething();
         }
@@ -249,89 +248,26 @@ bool StudentWorld::is_there_a_square_at_location(int dest_x, int dest_y) const
     return false;
 }
 
-
-
-
-
-bool StudentWorld::isValidPos(int x, int y, int dir)
+Actor* StudentWorld::get_square_at_location(int x, int y) const
 {
-    Board bd;
-    int boardNum = getBoardNumber();
-    ostringstream filename;
-    filename << "board0" << boardNum << ".txt";
-    string board_file = assetPath() + filename.str();
-    Board::LoadResult result = bd.loadBoard(board_file);
-    
-
-   
-    if (dir == 180 || dir == 270)
+    for (int i = 0; i < actors.size(); i++) 
     {
-        while (x % 16 != 0)
+        if (actors[i]->getX() == x && actors[i]->getY() == y && actors[i]->is_a_square())
         {
-            x++;
-        }
-        while (y % 16 != 0)
-        {
-            y++;
+            return actors[i];
+          
         }
     }
-        
-    
-    
-    x = x / 16;
-    y = y / 16;
 
-   
-
-    if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
-    {
-        if (bd.getContentsOf(x, y) != Board::empty)
-            return true;
-    }
-
-    return false;
-    //cout << "test1 " << x << " and1 " << y << endl;
-
-    /*for (int i = 0; i < actors.size(); i++)
-    {
-        int squareX, squareY;
-        squareX= actors[i]->getX() ;
-        squareY = actors[i]->getY() ;
-
-        
-            while (squareX % 16 != 0)
-            {
-                squareX++;
-            }
-            while (squareY % 16 != 0)
-            {
-                squareY++;
-            }
-        
-
-        squareX = squareX / 16;
-        squareY = squareY / 16;
-     
-
-       
-
-        if (x < BOARD_WIDTH && x >= 0 && y < BOARD_HEIGHT && y >= 0)
-        {
-            if (squareX == x && squareY == y )
-            {
-                
-                
-                    return true;
-                
-               
-            }
-        }
-        else
-        {
-            return false;
-        }
-
-    }*/
-    return false;
+    return nullptr;
 }
 
+
+Player* StudentWorld::get_other_player(int pNum) const
+{
+    if (pNum == 1)
+    {
+        return m_yoshi;
+    }
+        return m_peach;
+}

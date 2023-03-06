@@ -36,24 +36,38 @@ public:
 	virtual void doSomething();
 	bool is_waitingRoll() const { return m_waitingRoll; }
 	bool is_waitAction() const { return m_waitAction; }
+	bool is_firstMove() const { return m_firstMove; }
 	
 
 	int get_dice() const { return m_roll; }    // used to display stats on status line
 	int get_stars() const { return m_stars; }   // used to display stats on status line
 	int get_coins() const { return m_coins; }
 	bool has_vortex() const { return m_vortex; }
+	int get_ticks() const { return m_ticksToMove; }
+	int get_walkDir() const {return m_walkDir;}
+	int get_roll() const { return m_roll; }
 
 	bool is_a_square() const { return false; }
 	bool can_be_hit_by_vortex() const { return false; }
 	void hit_by_vortex() { return; };
 	bool validDir(int x, int y, int dir);
+	bool on_fork();
+	void force_walk_direction(int angle);
+
 
 	void randomDir();
+	void teleport_me_to_random_sq();
 	void adjust_stars(const int this_much) { m_stars += this_much; return; }
 	void adjust_coins(const int this_much) { m_coins += this_much; return; }
+
 	void adjust_action(bool action) { m_waitAction = action; }
+
 	void adjust_walkDir(int dir) { m_walkDir = dir; }
 	void adjust_vortex(bool ammo) { m_vortex = ammo; }
+	void adjust_ticks(int tick) { m_ticksToMove = tick; }
+	void adjust_rolls(int roll) { m_roll = roll; }
+	void adjust_waitingRoll(bool state) { m_waitingRoll = state; }
+	void adjust_teleState(bool tele) { m_teleported = tele; }
 
 
 private:
@@ -67,6 +81,8 @@ private:
 	int m_roll;
 	bool m_vortex;
 	bool m_waitAction;
+	bool m_firstMove;
+	bool m_teleported;
 	
 };
 
@@ -109,7 +125,7 @@ public:
 	bool can_be_hit_by_vortex() const { return false; }
 
 
-	void doSomething() { return; }
+	void doSomething();
 };
 
 class CoinSquare : public ActivateOnPlayer {
@@ -119,7 +135,7 @@ public:
 	  m_coinAdjust = adjust_coins_by;
   }
   
-  bool alter_Dir() { return true; }
+  
   bool is_a_square() const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
 
@@ -139,12 +155,13 @@ public:
   }
 
 
-  bool is_a_square()const { return true; }
+  bool alter_Dir() { return true; }
+  bool is_a_square() const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
   int get_angle() { return m_angle; }
 
 
-  void doSomething() { return; };
+  void doSomething();
 
 private:
 	int m_angle;
@@ -159,7 +176,7 @@ public:
   bool is_a_square()const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
 
-  void doSomething() { return; }
+  void doSomething();
 };
 
 class EventSquare : public ActivateOnPlayer {
@@ -170,7 +187,7 @@ public:
   bool is_a_square() const { return true; }
   bool can_be_hit_by_vortex() const { return false; }
 
-  void doSomething() { return; }
+  void doSomething();
 };
 
 class Enemy : public ActivateOnPlayer {
