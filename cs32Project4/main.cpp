@@ -22,8 +22,8 @@ using namespace std;
   // data files to makde debuggiing easier, so you can replace the string
   // literals with the names of those smaller files.
 
-const string USER_DATAFILE = "users.txt";
-const string MOVIE_DATAFILE = "movies.txt";
+const string USER_DATAFILE = "E:/CS32/cs32Project4/users.txt";
+const string MOVIE_DATAFILE = "E:/CS32/cs32Project4/movies.txt";
 
 int main()
 {
