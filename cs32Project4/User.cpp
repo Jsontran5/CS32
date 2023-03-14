@@ -15,15 +15,15 @@ User::User(const string& full_name, const string& email,
 
 string User::get_full_name() const
 {
-    return m_full_name;  // Replace this line with correct code.
+    return m_full_name;  
 }
 
 string User::get_email() const
 {
-    return m_email;  // Replace this line with correct code.
+    return m_email; 
 }
 
 vector<string> User::get_watch_history() const
 {
-    return m_watch_history;  // Replace this line with correct code.
+    return m_watch_history;  
 }
