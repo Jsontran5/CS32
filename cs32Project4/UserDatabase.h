@@ -16,6 +16,7 @@ public:
 private:
 
     TreeMultimap<std::string, User*> m_email_to_user;
+    bool m_loaded;
    
 };
 

@@ -26,6 +26,9 @@ public:
         int movie_count) const;
 
 private:
+
+
+
 };
 
 #endif // RECOMMENDER_INCLUDED

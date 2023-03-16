@@ -1,44 +1,3 @@
-//#include "UserDatabase.h"
-//#include "User.h"
-//
-//#include <string>
-//#include <vector>
-//#include <iostream>
-//#include <fstream>
-//using namespace std;
-//
-//UserDatabase::UserDatabase()
-//{
-//    m_loaded = false;
-//}
-//
-//bool UserDatabase::load(const string& filename)
-//{
-//    if (m_loaded) //already loaded
-//    {
-//        return false;
-//    }
-//    
-//    ifstream infile(filename);
-//    if (!infile)		        // Did opening the file fail?
-//    {
-//        return false;
-//    }
-//    else
-//    {
-//
-//    }
-//
-//
-//
-//    return false;  // Replace this line with correct code.
-//}
-//
-//User* UserDatabase::get_user_from_email(const string& email) const
-//{
-//    return nullptr;  // Replace this line with correct code.
-//}
-
 #include "UserDatabase.h"
 #include "User.h"
 
@@ -51,11 +10,15 @@ using namespace std;
 
 UserDatabase::UserDatabase()
 {
-   
+    m_loaded = false;
 }
 
 bool UserDatabase::load(const string& filename)
 {
+    if (m_loaded == true)
+    {
+        return false;
+    }
     ifstream infile(filename);
 
     
@@ -74,7 +37,7 @@ bool UserDatabase::load(const string& filename)
 
         int movie_count;
         infile >> movie_count;
-        infile.ignore(10000, '\n');
+        infile.ignore(100000, '\n');
 
         vector<string> watch_history;
 
@@ -93,7 +56,7 @@ bool UserDatabase::load(const string& filename)
 
     }
 
-
+    m_loaded = true;
     return true;  
 }
 
@@ -101,6 +64,11 @@ User* UserDatabase::get_user_from_email(const string& email) const
 {
 
     TreeMultimap<std::string, User*>::Iterator i = m_email_to_user.find(email);
+
+    if (!i.is_valid())
+    {
+        return nullptr;
+    }
     User* user = i.get_value();
 
 

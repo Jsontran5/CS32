@@ -56,10 +56,17 @@ public:
 
         ValueType& get_value() const
         {
+            if (m_curNode == nullptr)
+            {
+                throw 1;
+            }
+
             if (m_value != m_curNode->values.end())
             {
                 return *m_value;
             }
+
+       
             throw 1;
             
         }
@@ -76,6 +83,7 @@ public:
 
         void advance()
         {
+          
           if (m_value != m_curNode->values.end())
             {
                 m_value++;
@@ -148,7 +156,7 @@ public:
     Iterator find(const KeyType& key) const
     {
         Node* temp = m_root;
-
+        
        while (temp != nullptr)
         {
            if (key < temp->key)
@@ -163,6 +171,7 @@ public:
            {
                return Iterator(temp);
            }
+          
         }
 
         return Iterator();  // Replace this line with correct code.
