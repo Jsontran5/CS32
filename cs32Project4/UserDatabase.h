@@ -2,6 +2,7 @@
 #define USERDATABASE_INCLUDED
 
 #include <string>
+#include "treemm.h"
 
 class User;
 
@@ -13,6 +14,9 @@ public:
     User* get_user_from_email(const std::string& email) const;
 
 private:
+
+    TreeMultimap<std::string, User*> m_email_to_user;
+   
 };
 
 #endif // USERDATABASE_INCLUDED

@@ -26,7 +26,19 @@ private:
         }
     };
 
+  
+
     Node* m_root;
+    void FreeTree(Node* node)
+    {
+        if (node != nullptr)
+        {
+            FreeTree(node->left);
+            FreeTree(node->right);
+            delete node;
+        }
+        return;
+    }
 public:
     class Iterator
     {
@@ -48,7 +60,7 @@ public:
             {
                 return *m_value;
             }
-
+            throw 1;
             
         }
 
@@ -83,7 +95,7 @@ public:
 
     ~TreeMultimap()
     {
-        // Replace this line with correct code.
+        FreeTree(m_root);
     }
 
     void insert(const KeyType& key, const ValueType& value)
